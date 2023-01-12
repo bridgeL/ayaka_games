@@ -8,6 +8,8 @@
 
 </div>
 
+得益于[ayaka](https://github.com/bridgeL/ayaka)，本插件可作为[nonebot2](https://github.com/nonebot/nonebot2)(使用[onebotv11](https://github.com/nonebot/adapter-onebot)适配器)插件、[hoshino](https://github.com/Ice-Cirno/HoshinoBot)插件或[nonebot1](https://github.com/nonebot/nonebot)插件使用，也可将其作为console程序离线运行
+
 ## 安装
 
 ### 通过pip安装
