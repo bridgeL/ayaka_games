@@ -1,6 +1,6 @@
 <div align="center">
 
-# ayaka文字小游戏合集 - 0.0.0b0
+# ayaka文字小游戏合集 - 0.0.0b1
 
 开发进度 9/10，还剩1个小游戏等待构思
 
@@ -10,8 +10,18 @@
 
 ## 安装
 
+### 通过pip安装
+
 ```
 pip install ayaka_games
+```
+
+### 手动下载后导入
+
+还需额外安装依赖
+
+```
+pip install -r requirements.txt
 ```
 
 ## 指令
