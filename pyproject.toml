@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ayaka_games"
+version = "0.0.0b0"
+description = "ayaka小游戏合集"
+authors = ["Su <wxlxy316@163.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/bridgeL/ayaka_games"
+packages = [
+    { include = "ayaka_games" },
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ayaka = "^0.0.0.0"
+pypinyin = "^0.47.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
