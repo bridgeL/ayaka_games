@@ -38,7 +38,7 @@ class Config(AyakaConfig):
 
 config = Config()
 AUTHOR = "bridgeL"
-REPO = "ayaka-games"
+REPO = "ayaka_games"
 BRANCH = "master"
 
 

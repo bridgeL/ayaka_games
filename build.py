@@ -15,7 +15,7 @@ def get_ps(path: Path):
 if __name__ == "__main__":
     path = Path("data", "ayaka_games")
     AUTHOR = "bridgeL"
-    REPO = "ayaka-games"
+    REPO = "ayaka_games"
     BRANCH = "master"
     res_info = ResInfo(
         base=f"https://ghproxy.com/https://raw.githubusercontent.com/{AUTHOR}/{REPO}/{BRANCH}/data/ayaka_games",
