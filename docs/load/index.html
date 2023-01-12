@@ -443,7 +443,7 @@
 
 <p>得益于<a href="https://github.com/bridgeL/ayaka">ayaka</a>，本插件可作为如下机器人框架的插件使用</p>
 <ul>
-<li><a href="https://github.com/nonebot/nonebot2">nonebot2</a>(使用<a href="https://github.com/nonebot/adapter-onebot">onebotv11</a>适配器)</li>
+<li><a href="https://github.com/nonebot/nonebot2">nonebot2</a>(使用<a href="https://github.com/nonebot/adapter-onebot">onebot11</a>适配器)</li>
 <li><a href="https://github.com/Ice-Cirno/HoshinoBot">hoshino</a></li>
 <li><a href="https://github.com/nonebot/nonebot">nonebot1</a></li>
 </ul>
@@ -453,7 +453,7 @@
 <h2 id="hoshino">作为hoshino插件导入<a class="headerlink" href="#hoshino" title="Permanent link">&para;</a></h2>
 <p>从github仓库下载，然后安装依赖<code>pip install -r requirements.txt</code>，将其中的<code>ayaka_games</code>文件夹放入<code>hoshino/modules</code>，并在<code>hoshino/config/__bot__.py/</code>中的<code>MODULES_ON</code>里，写入字符串<code>ayaka_games</code></p>
 <h2 id="nonebot1">作为nonebot1插件导入<a class="headerlink" href="#nonebot1" title="Permanent link">&para;</a></h2>
-<p>待编辑</p>
+<p>通过pip安装，然后修改<code>bot.py</code>，加入<code>nonebot.load_plugin("ayaka_games")</code></p>
 <h2 id="console">作为console程序离线运行<a class="headerlink" href="#console" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code># run.py
 import ayaka.adapters as cat
