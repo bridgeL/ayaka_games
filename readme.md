@@ -8,7 +8,12 @@
 
 </div>
 
-得益于[ayaka](https://github.com/bridgeL/ayaka)，本插件可作为[nonebot2](https://github.com/nonebot/nonebot2)(使用[onebotv11](https://github.com/nonebot/adapter-onebot)适配器)插件、[hoshino](https://github.com/Ice-Cirno/HoshinoBot)插件或[nonebot1](https://github.com/nonebot/nonebot)插件使用，也可将其作为console程序离线运行
+得益于[ayaka](https://github.com/bridgeL/ayaka)，本插件可作为如下机器人框架的插件使用
+- [nonebot2](https://github.com/nonebot/nonebot2)(使用[onebotv11](https://github.com/nonebot/adapter-onebot)适配器)
+- [hoshino](https://github.com/Ice-Cirno/HoshinoBot)
+- [nonebot1](https://github.com/nonebot/nonebot)
+
+也可将其[作为console程序离线运行](#作为console程序离线运行)
 
 ## 安装
 
@@ -33,3 +38,24 @@ pip install -r requirements.txt
 ## 踩坑
 
 CRLF换行符的文件，会在github上被强制换为LF换行符再发放，这会导致文件哈希值变化
+
+
+## 作为console程序离线运行
+
+```
+# run.py
+import ayaka.adapters as cat
+
+cat.init()
+cat.regist()
+
+# 加载插件
+import ayaka_games
+
+if __name__ == "__main__":
+    cat.run()
+```
+
+```
+python run.py
+```
