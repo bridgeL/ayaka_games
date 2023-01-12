@@ -1,6 +1,6 @@
 <div align="center">
 
-# ayaka文字小游戏合集 - 0.0.0b1
+# ayaka文字小游戏合集 - 0.0.1
 
 开发进度 10/10
 
