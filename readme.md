@@ -16,42 +16,6 @@
 
 也可将其[作为console程序离线运行](#作为console程序离线运行)
 
-## 安装
-
-### 通过pip安装
-
-```
-pip install ayaka_games
-```
-
-### 手动下载后导入
-
-还需额外安装依赖
-
-```
-pip install -r requirements.txt
-```
-
-## 作为console程序离线运行
-
-```
-# run.py
-import ayaka.adapters as cat
-
-cat.init()
-cat.regist()
-
-# 加载插件
-import ayaka_games
-
-if __name__ == "__main__":
-    cat.run()
-```
-
-```
-python run.py
-```
-
 ## 文档
 
 https://bridgel.github.io/ayaka_games/
