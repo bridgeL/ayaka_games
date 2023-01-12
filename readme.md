@@ -2,7 +2,7 @@
 
 # ayaka文字小游戏合集 - 0.0.0b1
 
-开发进度 9/10，还剩1个小游戏等待构思
+开发进度 10/10
 
 **特别感谢**  [@灯夜](https://github.com/lunexnocty/Meiri) 大佬的插件蛮好玩的~
 
@@ -32,15 +32,6 @@ pip install ayaka_games
 pip install -r requirements.txt
 ```
 
-## 指令
-
-猫猫帮助
-
-## 踩坑
-
-CRLF换行符的文件，会在github上被强制换为LF换行符再发放，这会导致文件哈希值变化
-
-
 ## 作为console程序离线运行
 
 ```
@@ -60,6 +51,10 @@ if __name__ == "__main__":
 ```
 python run.py
 ```
+
+## 文档
+
+https://bridgel.github.io/ayaka_games/
 
 ## 其他
 

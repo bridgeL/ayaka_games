@@ -1,0 +1,62 @@
+# Project information
+site_name: Ayaka小游戏合集
+site_url: https://bridgel.github.io/ayaka_games/
+
+# Repository
+repo_name: ayaka_games
+repo_url: https://github.com/bridgeL/ayaka_games/
+
+# Copyright
+copyright: Copyright &copy; 2023 - 2023 bridgeL
+
+# dir setting
+docs_dir: website
+site_dir: docs
+
+# Configuration
+theme:
+  name: material
+  palette:
+    primary: brown
+    accent: blue
+  features:
+  - content.code.copy
+  - content.tabs.link
+  - navigation.indexes
+  - navigation.sections
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.tracking
+  - navigation.top
+  - navigation.footer
+  - toc.integrate
+  - search.highlight
+  - search.suggest
+  hide:
+    - toc
+nav:
+- 主页: index.md
+- 安装: install.md
+- 加载: load.md
+- 配置: config.md
+- 帮助: help.md
+
+markdown_extensions:
+- pymdownx.superfences
+- pymdownx.tabbed:
+    alternate_style: true 
+- toc:
+    title: 本页索引
+    permalink: true
+
+plugins:
+- search:
+    lang:
+    - en
+    - ja
+    separator: '[\s\-\.]+'
+      
+extra_javascript:
+- js/demo.js
+extra_css:
+- css/demo.css

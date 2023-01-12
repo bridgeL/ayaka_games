@@ -1,0 +1,40 @@
+.demo {
+    width: 600px;
+    max-width: 90vw;
+    background: #000;
+    color: white;
+    padding: 20px 0;
+    margin: 20px 0;
+    font-family: var(--md-code-font-family);
+    overflow: auto;
+}
+
+.demo-line {
+    padding: 0 20px;
+    white-space: pre-wrap;
+}
+
+.demo-line:has(.demo-user) {
+    background: #234;
+}
+
+.demo-user,
+.demo-bot,
+.demo-sys {
+    font-weight: bold;
+    width: 70px;
+    display: inline-block;
+}
+
+.demo-user {
+    color: #00ff00;
+}
+
+.demo-bot {
+    color: #ff6000;
+}
+
+.demo-sys,
+.demo-cmd {
+    color: #ffff00;
+}
