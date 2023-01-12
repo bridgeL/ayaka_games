@@ -17,8 +17,8 @@ site_dir: docs
 theme:
   name: material
   palette:
-    primary: brown
-    accent: blue
+    primary: teal
+    accent: deep orange
   features:
   - content.code.copy
   - content.tabs.link
