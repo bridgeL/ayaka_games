@@ -1,12 +1,21 @@
-两种安装方式
+## 历史遗留问题
 
-## 通过pip安装（推荐）
+如果你之前安装过`nonebot_plugin_ayaka_games`，请先确保它卸载干净
+
+```
+pip uninstall nonebot_plugin_ayaka_games
+pip uninstall nonebot_plugin_ayaka
+```
+
+## 两种安装方式
+
+### 使用pip（推荐）
 
 ```
 pip install ayaka_games
 ```
 
-## 手动下载
+### 手动下载
 
 下载[github仓库](https://github.com/bridgeL/ayaka_games)
 
