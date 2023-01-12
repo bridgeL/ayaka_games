@@ -6,17 +6,13 @@
 
 也可将其作为console程序离线运行
 
-## 作为nonebot2插件导入
+## 作为nonebot2/nonebot1插件导入
 
 通过pip安装，然后修改`bot.py`，加入`nonebot.load_plugin("ayaka_games")`
 
 ## 作为hoshino插件导入
 
 从github仓库下载，然后安装依赖`pip install -r requirements.txt`，将其中的`ayaka_games`文件夹放入`hoshino/modules`，并在`hoshino/config/__bot__.py/`中的`MODULES_ON`里，写入字符串`ayaka_games`
-
-## 作为nonebot1插件导入
-
-通过pip安装，然后修改`bot.py`，加入`nonebot.load_plugin("ayaka_games")`
 
 ## 作为console程序离线运行
 
