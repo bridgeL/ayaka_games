@@ -1,6 +1,6 @@
 <div align="center">
 
-# Ayaka小游戏合集 - 0.0.4b1
+# Ayaka小游戏合集 - 0.0.4
 
 开发进度 10/10
 
