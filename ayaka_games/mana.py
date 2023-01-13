@@ -69,11 +69,11 @@ def change_god(god_name: str, god: ManaGod):
 def happy(god: ManaGod, mana: int):
     if mana < -100:
         change_god(god_names[randint(0, 3)], god)
-        return mana*2, "命途为你的愚行而惊吓"
+        return mana*2, "命途为你的愚行而惊讶"
 
     power = god.power
 
-    god.mana += mana
+    god.mana += abs(mana)
     if god.mana >= 8:
         god.power += int(god.mana/8)
         god.mana = 0
@@ -102,7 +102,7 @@ def sorrow(god: ManaGod, mana: int):
 
     power = god.power
 
-    god.mana += mana
+    god.mana += abs(mana)
     if god.mana >= power:
         god.power += int(god.mana/power)
         god.mana = 0
@@ -132,7 +132,7 @@ def abyss(god: ManaGod, mana: int):
     if mana % 3 == 2:
         god.power -= 1
     else:
-        god.power += mana % 3
+        god.power += abs(mana) % 3
 
     god.cnt += 1
     if god.cnt >= 12:
@@ -157,7 +157,7 @@ def wise(god: ManaGod, mana: int):
     power = god.power
     reward = int(god.mana / 3)
 
-    god.mana += mana*2 - reward
+    god.mana += abs(mana)*2 - reward
     if power <= 7:
         god.mana += power*3
     else:
