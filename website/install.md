@@ -1,3 +1,7 @@
+## Python 3.10
+
+需要python3.10或更高版本
+
 ## 历史遗留问题
 
 如果你之前安装过`nonebot_plugin_ayaka_games`，请先确保它卸载干净

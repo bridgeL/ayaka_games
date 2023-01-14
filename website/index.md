@@ -1,5 +1,10 @@
 # Ayaka小游戏合集
 
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ayaka_games)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ayaka_games)
+![PyPI - License](https://img.shields.io/pypi/l/ayaka_games)
+![PyPI](https://img.shields.io/pypi/v/ayaka_games)
+
 开发进度 10/10
 
 **特别感谢**  [@灯夜](https://github.com/lunexnocty/Meiri) 大佬的印加宝藏
