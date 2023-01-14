@@ -78,3 +78,9 @@ command_sep = [" "]
 `data/ayaka_games/原神随机事件.json`
 
 看得懂就自己改，看不懂就算了，写的比较随性（doge
+
+## 下一步
+
+<div align="right">
+    在这里~ ↘
+</div>
