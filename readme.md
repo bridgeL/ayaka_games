@@ -4,7 +4,7 @@
 
 开发进度 10/10
 
-**特别感谢**  [@灯夜](https://github.com/lunexnocty/Meiri) 大佬的插件蛮好玩的~
+**特别感谢**  [@灯夜](https://github.com/lunexnocty/Meiri) 大佬的印加宝藏
 
 </div>
 
