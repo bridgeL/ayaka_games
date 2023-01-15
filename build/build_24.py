@@ -415,92 +415,90 @@ class Builder2(Builder):
         return rs
 
 
-# unit = Builder1(24)
-# data = unit.create_rough_data()
-# unit.save("1_temp", data)
+if __name__ == "__main__":
 
-# data = unit.load("1_temp")
-# data = unit.remove_ops_same(data)
-# data = unit.remove_get_one(data)
-# data = unit.remove_special_ops(data, ["+", "+", "-"])
-# data = unit.remove_special_ops(data, ["+", "-", "-"])
-# data = unit.remove_special_ops(data, ["+", "+", "*"])
-# data = unit.remove_special_ops(data, ["+", "-", "*"])
-# data = unit.remove_special_ops(data, ["-", "-", "*"])
-# data = unit.remove_mult_one(data)
-# data = unit.combine_first_exchange(data)
-# data = unit.combine_mult_exchange(data)
-# data = unit.combine_add_exchange(data)
-# unit.save("1", data)
+    # unit = Builder1(24)
+    # data = unit.create_rough_data()
+    # unit.save("1_temp", data)
 
-# data = unit.load("1")
-# data2 = data
-# unit.beauty_save("1_b", data)
+    # data = unit.load("1_temp")
+    # data = unit.remove_ops_same(data)
+    # data = unit.remove_get_one(data)
+    # data = unit.remove_special_ops(data, ["+", "+", "-"])
+    # data = unit.remove_special_ops(data, ["+", "-", "-"])
+    # data = unit.remove_special_ops(data, ["+", "+", "*"])
+    # data = unit.remove_special_ops(data, ["+", "-", "*"])
+    # data = unit.remove_special_ops(data, ["-", "-", "*"])
+    # data = unit.remove_mult_one(data)
+    # data = unit.combine_first_exchange(data)
+    # data = unit.combine_mult_exchange(data)
+    # data = unit.combine_add_exchange(data)
+    # unit.save("1", data)
 
-# unit = Builder2(24)
-# data = unit.create_rough_data()
-# unit.save("2_temp", data)
+    # data = unit.load("1")
+    # data2 = data
+    # unit.beauty_save("1_b", data)
 
-# data = unit.load("2_temp")
-# data = unit.remove_ops_same(data)
-# data = unit.remove_get_one(data)
-# data = unit.remove_mult_one(data)
-# data = unit.combine_first_exchange(data)
-# data = unit.combine_final_exchange(data)
-# data = unit.combine_mid_exchange(data)
-# unit.save("2", data)
+    # unit = Builder2(24)
+    # data = unit.create_rough_data()
+    # unit.save("2_temp", data)
 
-# data = unit.load("2")
-# unit.beauty_save("2_b", data)
+    # data = unit.load("2_temp")
+    # data = unit.remove_ops_same(data)
+    # data = unit.remove_get_one(data)
+    # data = unit.remove_mult_one(data)
+    # data = unit.combine_first_exchange(data)
+    # data = unit.combine_final_exchange(data)
+    # data = unit.combine_mid_exchange(data)
+    # unit.save("2", data)
 
+    # data = unit.load("2")
+    # unit.beauty_save("2_b", data)
 
-# # 合并
-# data2 += data
-# unit.sort(data2)
-# unit.beauty_save("", data2)
+    # # 合并
+    # data2 += data
+    # unit.sort(data2)
+    # unit.beauty_save("", data2)
 
+    unit = Builder1(48)
+    data = unit.create_rough_data()
+    unit.save("1_temp", data)
 
+    data = unit.load("1_temp")
+    data = unit.remove_ops_same(data)
+    data = unit.remove_get_one(data)
+    data = unit.remove_special_ops(data, ["+", "+", "-"])
+    data = unit.remove_special_ops(data, ["+", "-", "-"])
+    data = unit.remove_special_ops(data, ["+", "+", "*"])
+    data = unit.remove_special_ops(data, ["+", "-", "*"])
+    data = unit.remove_special_ops(data, ["-", "-", "*"])
+    data = unit.remove_mult_one(data)
+    data = unit.combine_first_exchange(data)
+    data = unit.combine_mult_exchange(data)
+    data = unit.combine_add_exchange(data)
+    unit.save("1", data)
 
-unit = Builder1(48)
-data = unit.create_rough_data()
-unit.save("1_temp", data)
+    data = unit.load("1")
+    data2 = data
+    unit.beauty_save("1_b", data)
 
-data = unit.load("1_temp")
-data = unit.remove_ops_same(data)
-data = unit.remove_get_one(data)
-data = unit.remove_special_ops(data, ["+", "+", "-"])
-data = unit.remove_special_ops(data, ["+", "-", "-"])
-data = unit.remove_special_ops(data, ["+", "+", "*"])
-data = unit.remove_special_ops(data, ["+", "-", "*"])
-data = unit.remove_special_ops(data, ["-", "-", "*"])
-data = unit.remove_mult_one(data)
-data = unit.combine_first_exchange(data)
-data = unit.combine_mult_exchange(data)
-data = unit.combine_add_exchange(data)
-unit.save("1", data)
+    unit = Builder2(48)
+    data = unit.create_rough_data()
+    unit.save("2_temp", data)
 
-data = unit.load("1")
-data2 = data
-unit.beauty_save("1_b", data)
+    data = unit.load("2_temp")
+    data = unit.remove_ops_same(data)
+    data = unit.remove_get_one(data)
+    data = unit.remove_mult_one(data)
+    data = unit.combine_first_exchange(data)
+    data = unit.combine_final_exchange(data)
+    data = unit.combine_mid_exchange(data)
+    unit.save("2", data)
 
-unit = Builder2(48)
-data = unit.create_rough_data()
-unit.save("2_temp", data)
+    data = unit.load("2")
+    unit.beauty_save("2_b", data)
 
-data = unit.load("2_temp")
-data = unit.remove_ops_same(data)
-data = unit.remove_get_one(data)
-data = unit.remove_mult_one(data)
-data = unit.combine_first_exchange(data)
-data = unit.combine_final_exchange(data)
-data = unit.combine_mid_exchange(data)
-unit.save("2", data)
-
-data = unit.load("2")
-unit.beauty_save("2_b", data)
-
-
-# 合并
-data2 += data
-unit.sort(data2)
-unit.beauty_save("", data2)
+    # 合并
+    data2 += data
+    unit.sort(data2)
+    unit.beauty_save("", data2)
