@@ -30,7 +30,7 @@ def show_cnt(func):
 
 
 class Builder:
-    def __init__(self, n: int,  template: str) -> None:
+    def __init__(self, n: int, template: str) -> None:
         self.n = n
         self.template = template
 

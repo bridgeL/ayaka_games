@@ -42,7 +42,7 @@ nav:
 markdown_extensions:
 - pymdownx.superfences
 - pymdownx.tabbed:
-    alternate_style: true 
+    alternate_style: true
 - toc:
     title: 本页索引
     permalink: true
@@ -53,7 +53,7 @@ plugins:
     - en
     - ja
     separator: '[\s\-\.]+'
-      
+
 extra_javascript:
 - js/demo.js
 extra_css:
