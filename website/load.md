@@ -15,8 +15,12 @@
 
 - 从github仓库下载
 - 安装依赖`pip install -r requirements.txt`
-- 将内部的`ayaka_games`文件夹放入`hoshino/modules`
+- 将`ayaka_games/ayaka_games`文件夹放入`hoshino/modules`
 - 在`hoshino/config/__bot__.py`中的`MODULES_ON`里，写入字符串`ayaka_games`
+
+最终机器人目录应该是这样
+
+![图片](https://user-images.githubusercontent.com/47290820/212525875-c72c83ae-baa1-4085-8f83-7c4a11711895.png)
 
 ## 作为console程序离线运行
 
