@@ -190,7 +190,7 @@ def check_num(ts: list[str | int], nums: list[int]):
             if t not in nums_copy:
                 return False
             nums_copy.remove(t)
-    return True
+    return not nums_copy
 
 
 def check_and_correct_op(ts: list[str | int]):
