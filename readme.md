@@ -27,6 +27,17 @@ https://bridgel.github.io/ayaka_games/
 
 ## 作为console程序离线运行
 
+```py
+# run.py
+import ayaka.adapters as cat
+
+# 加载插件
+# do something
+
+if __name__ == "__main__":
+    cat.run()
+```
+
 ```
 python run.py
 ```
