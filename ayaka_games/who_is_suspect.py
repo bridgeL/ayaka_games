@@ -329,7 +329,7 @@ async def vote():
     if not cat.current.arg:
         return
 
-    uid = cat.params.nums[0]
+    uid = str(cat.params.nums[0])
 
     # 投票
     f, info = game.vote(cat.current.sender_id, uid)
