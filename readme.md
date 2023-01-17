@@ -21,6 +21,12 @@
 
 也可将其作为console程序离线运行
 
+## 作为console程序离线运行
+
+```
+python run.py
+```
+
 ## 文档
 
 https://bridgel.github.io/ayaka_games/

@@ -1,4 +1,8 @@
-'''生成资源清单'''
+'''
+    生成资源清单 res_info.json
+
+    python build/build.py
+'''
 from pathlib import Path
 from ayaka import ResInfo, ResItem, get_file_hash
 
@@ -13,7 +17,8 @@ def get_ps(path: Path):
 
 
 if __name__ == "__main__":
-    path = Path("data", "ayaka_games")
+    ROOT_PATH = Path(".").parent
+    path = ROOT_PATH / "data"/"ayaka_games"
     AUTHOR = "bridgeL"
     REPO = "ayaka_games"
     BRANCH = "master"
@@ -29,5 +34,6 @@ if __name__ == "__main__":
         ]
     )
 
-    with Path("res_info.json").open("w+", encoding="utf8") as f:
+    path = ROOT_PATH / "res_info.json"
+    with path.open("w+", encoding="utf8") as f:
         f.write(res_info.json(ensure_ascii=False, indent=4))
