@@ -225,7 +225,7 @@ async def inquiry_all():
     await cat.send(info)
 
 
-@cat.on_cmd(cmds=["加一", "加一秒"], states="idle")
+@cat.on_cmd(cmds=["加一", "+1", "加1"], states="idle")
 async def plus():
     '''让你的时间+1'''
     game = cat.get_data(Game)

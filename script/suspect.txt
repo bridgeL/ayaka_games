@@ -1,0 +1,22 @@
+# 测试谁是卧底 √
+g 100 1 谁是卧底
+g 100 2 join
+g 100 3 join
+g 100 4 join
+g 100 4 leave
+g 100 4 start
+g 100 2 start
+g 100 4 join
+g 100 2 start
+
+g 100 1 vote 2
+g 100 3 vote 2
+g 100 4 vote 2
+
+g 100 2 vote 1
+g 100 1 vote 1
+g 100 3 vote 1
+g 100 4 vote 1
+
+g 100 4 exit
+g 100 4 强制退出

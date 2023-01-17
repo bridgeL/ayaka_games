@@ -1,0 +1,9 @@
+s mana
+s plus
+s calc
+s dragon
+s bag
+s get30
+s inca
+s query
+s suspect

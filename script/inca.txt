@@ -1,0 +1,28 @@
+# 测试印加 √
+g 100 1 incan
+g 100 2 join
+g 100 1 start
+p 1 go
+p 2 go
+p 1 back
+p 2 go
+p 2 go
+p 2 go
+p 2 go
+p 2 go
+p 2 go
+p 1 go
+p 1 back
+p 2 back
+p 1 back
+p 2 back
+p 1 back
+p 2 back
+p 1 back
+p 2 back
+p 1 back
+p 2 back
+p 1 back
+p 2 back
+p 1 back
+p 2 back
