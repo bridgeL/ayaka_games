@@ -296,47 +296,27 @@
       
         <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
-    [很关键] 命令开头和分隔符
-  </a>
-  
-    <nav class="md-nav" aria-label="[很关键] 命令开头和分隔符">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    必须满足的要求
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
     推荐配置
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_2" class="md-nav__link">
     记得重启
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     总配置
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     独立数据文件
   </a>
   
@@ -344,7 +324,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     接龙
   </a>
   
@@ -358,21 +338,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     文字税
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     谁是卧底
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     原神随机事件
   </a>
   
@@ -384,7 +364,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_11" class="md-nav__link">
+  <a href="#_9" class="md-nav__link">
     下一步
   </a>
   
@@ -435,22 +415,13 @@
   <h1>配置</h1>
 
 <p>你可以自定义一些配置</p>
-<h2 id="_1">[很关键] 命令开头和分隔符<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>请修改相应机器人框架的配置</p>
-<h3 id="_2">必须满足的要求<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
-<ol>
-<li>已配置command_start、command_sep</li>
-<li>command_start、command_sep 均只有一项</li>
-<li>command_sep 不为空字符串</li>
-</ol>
-<p><strong>ayaka仅保证在此限制下正常工作</strong>，其他情况可能会有bug也可能没有，无法保证可靠性</p>
-<h3 id="_3">推荐配置<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<h2 id="_1">推荐配置<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>command_start = [&quot;&quot;]
 command_sep = [&quot; &quot;]
 </code></pre></div>
-<h2 id="_4">记得重启<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_2">记得重启<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>修改配置后需要<strong>重启bot</strong>才生效</p>
-<h2 id="_5">总配置<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_3">总配置<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p><code>data/ayaka/ayaka_games.json</code></p>
 <table>
 <thead>
@@ -528,8 +499,8 @@ command_sep = [&quot; &quot;]
 </tr>
 </tbody>
 </table>
-<h2 id="_6">独立数据文件<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<h3 id="_7">接龙<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<h2 id="_4">独立数据文件<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="_5">接龙<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>data/ayaka_games/接龙/成语.txt</code></li>
 <li><code>data/ayaka_games/接龙/原神.txt</code></li>
@@ -542,16 +513,16 @@ command_sep = [&quot; &quot;]
 <li><code>data/ayaka_games/24点/48.json</code></li>
 </ul>
 <p>如果想添加新题型，直接添加<code>&lt;数字&gt;.json</code>文件即可，bot重启后会自动读取该题型</p>
-<h3 id="_8">文字税<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<h3 id="_6">文字税<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
 <p><code>data/ayaka_games/文字税.txt</code></p>
 <p>设置文字市场的文字池，每次从文字池中抽取20个进入市场</p>
-<h3 id="_9">谁是卧底<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<h3 id="_7">谁是卧底<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
 <p><code>data/ayaka_games/谁是卧底.txt</code></p>
 <p>可以自行添加你想要的词汇，一行一对词汇，前者是普通人，后者是卧底</p>
-<h3 id="_10">原神随机事件<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<h3 id="_8">原神随机事件<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
 <p><code>data/ayaka_games/原神随机事件.json</code></p>
 <p>看得懂就自己改，看不懂就算了，写的比较随性（doge</p>
-<h2 id="_11">下一步<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
+<h2 id="_9">下一步<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
 <div align="right">
     在这里~ ↘
 </div>

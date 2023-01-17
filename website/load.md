@@ -28,9 +28,6 @@
 # run.py
 import ayaka.adapters as cat
 
-cat.init()
-cat.regist()
-
 # 加载插件
 import ayaka_games
 

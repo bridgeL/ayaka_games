@@ -1,18 +1,6 @@
 你可以自定义一些配置
 
-## [很关键] 命令开头和分隔符
-
-请修改相应机器人框架的配置
-
-### 必须满足的要求
-
-1. 已配置command_start、command_sep
-2. command_start、command_sep 均只有一项
-3. command_sep 不为空字符串
-
-**ayaka仅保证在此限制下正常工作**，其他情况可能会有bug也可能没有，无法保证可靠性
-
-### 推荐配置
+## 推荐配置
 
 ```
 command_start = [""]
