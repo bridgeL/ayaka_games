@@ -21,6 +21,21 @@
 
 也可将其作为console程序离线运行
 
+## 历史遗留问题
+
+如果你之前安装过`nonebot_plugin_ayaka_games`，请先确保它卸载干净
+
+```
+pip uninstall nonebot_plugin_ayaka_games
+pip uninstall nonebot_plugin_ayaka
+```
+
+## 安装
+
+```
+pip install ayaka_games
+```
+
 ## 文档
 
 https://bridgel.github.io/ayaka_games/
@@ -32,7 +47,7 @@ https://bridgel.github.io/ayaka_games/
 import ayaka.adapters as cat
 
 # 加载插件
-# do something
+import ayaka_games
 
 if __name__ == "__main__":
     cat.run()
