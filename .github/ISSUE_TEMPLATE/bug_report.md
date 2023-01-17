@@ -3,8 +3,6 @@ name: Bug 报告
 about: 提交相关信息来告诉我你遇到了什么问题
 title: 'Bug: 这是标题'
 labels: bug
-assignees: ''
-
 ---
 
 描述你的问题
