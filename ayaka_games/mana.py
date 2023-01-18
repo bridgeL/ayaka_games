@@ -1,7 +1,9 @@
 from asyncio import sleep
 from random import randint
-from ayaka import AyakaCat, AyakaGroupDB, AyakaUserDB
+from sqlmodel import SQLModel, Field
+from ayaka import AyakaCat, get_session
 from .bag import get_money
+from .utils import get_or_create
 
 god_names = ['欢愉', '悼亡', '深渊', '智慧']
 
@@ -13,8 +15,9 @@ cat.help = '''
 '''
 
 
-class ManaGod(AyakaGroupDB):
-    __table_name__ = "mana_god"
+class ManaGod(SQLModel, table=True):
+    __tablename__ = "mana_god"
+    group_id: str = Field(primary_key=True)
     name: str = "欢愉"
     power: int = 1
     cnt: int = 0
@@ -43,17 +46,20 @@ class ManaGod(AyakaGroupDB):
         return f"{r} {c} {self.power}"
 
 
-def get_mana_god(group_id: int,):
-    return ManaGod.select_one(group_id=group_id)
+def get_mana_god(session, group_id: str):
+    return get_or_create(session, ManaGod, group_id=group_id)
 
 
-class UserMana(AyakaUserDB):
-    __table_name__ = "user_mana"
+class UserMana(SQLModel, table=True):
+    __tablename__ = "user_mana"
+    group_id: str = Field(primary_key=True)
+    user_id: str = Field(primary_key=True)
     mana: int = 10
 
 
-def get_user_mana(group_id: int, user_id: int):
-    return UserMana.select_one(
+def get_user_mana(session, group_id: str, user_id: str):
+    return get_or_create(
+        session, UserMana,
         group_id=group_id,
         user_id=user_id
     )
@@ -182,113 +188,117 @@ cat.set_rest_cmds(cmds=["exit", "退出"])
 @cat.on_cmd(cmds=['divine', '占卜'], states="idle")
 async def pray():
     '''花费1玛娜，祈求神的回应'''
-    usermana = get_user_mana(cat.channel.id, cat.user.id)
-    god = get_mana_god(cat.channel.id)
+    with get_session() as session:
+        usermana = get_user_mana(session, cat.channel.id, cat.user.id)
+        god = get_mana_god(session, cat.channel.id)
 
-    name = cat.user.name
+        name = cat.user.name
+        mana = usermana.mana
+        if mana <= 0:
+            await cat.send(f"[{name}] 没有玛娜")
+            return
 
-    mana = usermana.mana
-    if mana <= 0:
-        await cat.send(f"[{name}] 没有玛娜")
-        return
+        usermana.mana -= 1
 
-    usermana.mana -= 1
+        await cat.send(f"[{name}] 花费了 1玛娜，聆听星辰的呓语")
+        await sleep(1)
+        await cat.send(f"...")
+        await sleep(1)
+        await cat.send(f"...")
+        await sleep(1)
 
-    await cat.send(f"[{name}] 花费了 1玛娜，聆听星辰的呓语")
-    await sleep(1)
-    await cat.send(f"...")
-    await sleep(1)
-    await cat.send(f"...")
-    await sleep(1)
-
-    await cat.send(god.say())
+        await cat.send(god.say())
+        session.commit()
 
 
 @cat.on_cmd(cmds=['pray', '祈祷'], states="idle")
 async def handle():
     '''n 花费n玛娜，感受神的呼吸'''
-    usermana = get_user_mana(cat.channel.id, cat.user.id)
-    god = get_mana_god(cat.channel.id)
+    with get_session() as session:
+        usermana = get_user_mana(session, cat.channel.id, cat.user.id)
+        god = get_mana_god(session, cat.channel.id)
 
-    if not cat.nums:
-        await cat.send("请使用 pray <数字>")
-        return
+        if not cat.nums:
+            await cat.send("请使用 pray <数字>")
+            return
 
-    arg = cat.nums[0]
-    name = cat.user.name
+        arg = cat.nums[0]
+        name = cat.user.name
+        mana = usermana.mana
+        if mana < arg:
+            await cat.send(f"[{name}] 只有 {mana}玛娜")
+            return
 
-    mana = usermana.mana
-    if mana < arg:
-        await cat.send(f"[{name}] 只有 {mana}玛娜")
-        return
+        funcs = {
+            '欢愉': happy,
+            '悼亡': sorrow,
+            '深渊': abyss,
+            '智慧': wise,
+        }
 
-    funcs = {
-        '欢愉': happy,
-        '悼亡': sorrow,
-        '深渊': abyss,
-        '智慧': wise,
-    }
+        old_god_name = god.name
 
-    old_god_name = god.name
+        func = funcs[god.name]
+        reward, info = func(god=god, mana=arg)
+        reward = int(reward)
+        await cat.send(info)
+        usermana.mana += reward - arg
+        mana = usermana.mana
+        await cat.send(f"[{name}] 花费了 {arg}玛娜，获得了 {reward}玛娜")
+        await cat.send(f"[{name}] 当前有 {mana}玛娜")
 
-    func = funcs[god.name]
-    reward, info = func(god=god, mana=arg)
-    reward = int(reward)
-    await cat.send(info)
-    usermana.mana += reward - arg
-    mana = usermana.mana
-    await cat.send(f"[{name}] 花费了 {arg}玛娜，获得了 {reward}玛娜")
-    await cat.send(f"[{name}] 当前有 {mana}玛娜")
+        if old_god_name != god.name:
+            await cat.send("星空在惊惧中震颤，旧的命途陨落，新的命途执掌星空")
+            await cat.send(god.say())
 
-    if old_god_name != god.name:
-        await cat.send("星空在惊惧中震颤，旧的命途陨落，新的命途执掌星空")
-        await cat.send(god.say())
+        session.commit()
 
 
 @cat.on_cmd(cmds="mana", states="idle")
 async def handle():
     '''正数买入，负数卖出，0查询'''
-
-    if not cat.nums:
-        await cat.send("请使用 mana <数字>")
-        return
-
-    usermana = get_user_mana(cat.channel.id, cat.user.id)
-    usermoney = get_money(cat.channel.id, cat.user.id)
-    num = cat.nums[0]
-    name = cat.user.name
-
-    mana = usermana.mana
-    money = usermoney.value
-
-    if num == 0:
-        await cat.send(f"[{name}] 当前持有 {mana}个玛娜")
-        return
-
-    # 买mana
-    if num > 0:
-        action = "购买"
-    else:
-        action = "卖出"
-        num = -num
-
-    if action == "购买":
-        if money < num*1000:
-            await cat.send(f"[{name}] 只有{money}个金币")
+    with get_session() as session:
+        if not cat.nums:
+            await cat.send("请使用 mana <数字>")
             return
-        else:
-            usermoney.value -= num*1000
-            money = usermoney.value
-            usermana.mana += num
-            mana = usermana.mana
-    else:
-        if mana < num:
-            await cat.send(f"[{name}] 只有{mana}个玛娜")
-            return
-        else:
-            usermoney.value += num*1000
-            money = usermoney.value
-            usermana.mana -= num
-            mana = usermana.mana
 
-    await cat.send(f"[{name}] {action}玛娜成功，当前持有 {money}个金币，{mana}个玛娜")
+        usermana = get_user_mana(session, cat.channel.id, cat.user.id)
+        usermoney = get_money(session, cat.channel.id, cat.user.id)
+        num = cat.nums[0]
+        name = cat.user.name
+
+        mana = usermana.mana
+        money = usermoney.money
+
+        if num == 0:
+            await cat.send(f"[{name}] 当前持有 {mana}个玛娜")
+            return
+
+        # 买mana
+        if num > 0:
+            action = "购买"
+        else:
+            action = "卖出"
+            num = -num
+
+        if action == "购买":
+            if money < num*1000:
+                await cat.send(f"[{name}] 只有{money}个金币")
+                return
+            else:
+                usermoney.money -= num*1000
+                money = usermoney.money
+                usermana.mana += num
+                mana = usermana.mana
+        else:
+            if mana < num:
+                await cat.send(f"[{name}] 只有{mana}个玛娜")
+                return
+            else:
+                usermoney.money += num*1000
+                money = usermoney.money
+                usermana.mana -= num
+                mana = usermana.mana
+
+        await cat.send(f"[{name}] {action}玛娜成功，当前持有 {money}个金币，{mana}个玛娜")
+        session.commit()

@@ -1,3 +1,4 @@
+# 测试祈祷 √
 g 100 1 pray
 g 100 1 pray
 g 100 1 pray

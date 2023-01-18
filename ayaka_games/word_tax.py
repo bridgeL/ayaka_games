@@ -1,9 +1,10 @@
 from random import sample
 from time import time
-from pydantic import BaseModel, Field
-from ayaka import AyakaCat, AyakaUserDB, AyakaGroupDB, AyakaDB, load_data_from_file
+from pydantic import BaseModel
+from sqlmodel import SQLModel, Field, select
+from ayaka import AyakaCat, load_data_from_file, get_session
 from .bag import get_money, Money
-from .utils import downloader, config
+from .utils import downloader, config, get_or_create
 
 cat = AyakaCat("文字税")
 cat.help = '''知识付费（doge
@@ -19,17 +20,30 @@ async def finish():
     words.extend(load_data_from_file(path))
 
 
-class UserWord(AyakaUserDB):
-    __table_name__ = "word_tax"
-    word: str = Field(extra=AyakaDB.__primary_key__)
+class UserWord(SQLModel, table=True):
+    __tablename__ = "word_tax"
+    group_id: str = Field(primary_key=True)
+    user_id: str = Field(primary_key=True)
+    word: str = Field(primary_key=True)
     uname: str = ""
     time: int = 0
 
 
-class GroupWord(AyakaGroupDB):
-    __table_name__ = "word_tax_group"
+class GroupWord(SQLModel, table=True):
+    __tablename__ = "word_tax_group"
+    group_id: str = Field(primary_key=True)
     words: str = ""
     time: int = 0
+
+
+def get_group_words(session, group_id: str):
+    return get_or_create(session, GroupWord, group_id=group_id)
+
+
+def get_user_words(session, group_id: str):
+    stmt = select(UserWord).filter_by(group_id=group_id)
+    results = session.exec(stmt)
+    return results.all()
 
 
 class GroupMarket(BaseModel):
@@ -44,23 +58,25 @@ class GroupMarket(BaseModel):
 
     def load(self, group_id):
         if self.first:
-            self.first = False
-            self.users = UserWord.select_many(group_id=group_id)
-            gw = GroupWord.select_one(group_id=group_id)
-            self.time = gw.time
-            self.words = [u for u in gw.words]
+            with get_session() as session:
+                self.first = False
+                self.users = get_user_words(session, group_id)
+                gw = get_group_words(session, group_id)
+                self.time = gw.time
+                self.words = [u for u in gw.words]
+                session.commit()
 
-    def refresh(self, group_id):
+    def refresh(self, session, group_id):
         self.first = False
         self.time = int(time())
         self.words = sample(words, 20)
-        gw = GroupWord.select_one(group_id=group_id)
+        gw = get_group_words(session, group_id)
         gw.words = "".join(self.words)
         gw.time = self.time
+
+        for u in self.users:
+            session.delete(u)
         self.users = []
-        UserWord.delete(
-            group_id=group_id
-        )
 
     def is_open(self):
         return int(time()) - self.time <= config.word_tax.open_duration
@@ -71,17 +87,17 @@ class GroupMarket(BaseModel):
     def is_valid(self):
         return int(time()) - self.time <= config.word_tax.valid_duration
 
-    def buy(self, group_id, user_id, uname):
-        UserWord.delete(
-            group_id=group_id,
-            user_id=user_id,
-        )
-        self.users = [
+    def buy(self, session, group_id, user_id, uname):
+        us = [
             u for u in self.users
-            if u.group_id != group_id or u.user_id != user_id
+            if u.group_id == group_id and u.user_id == user_id
         ]
+        for u in us:
+            self.users.remove(u)
+            session.delete(u)
+
         words = sample(self.words, 3)
-        users = [
+        us = [
             UserWord(
                 group_id=group_id,
                 user_id=user_id,
@@ -91,8 +107,9 @@ class GroupMarket(BaseModel):
             )
             for word in words
         ]
-        UserWord.insert_many(users)
-        self.users.extend(users)
+        for u in us:
+            self.users.append(u)
+            session.add(u)
         return words
 
     def check(self, msg: str, user_id: int):
@@ -137,30 +154,38 @@ async def open_word_market():
 @cat.on_cmd(cmds=["开放文字市场", "刷新文字市场"])
 async def open_word_market():
     '''刷新文字市场，开放福袋购买'''
-    user = await cat.get_user(cat.user.id)
-    if user.role not in ["owner", "admin"]:
-        await cat.send("请联系管理员开放市场，您没有权限")
-        return
+    with get_session() as session:
+        user = await cat.get_user(cat.user.id)
+        if user.role not in ["owner", "admin"]:
+            await cat.send("请联系管理员开放市场，您没有权限")
+            return
 
-    market = cat.get_data(GroupMarket)
-    market.refresh(cat.channel.id)
-    info = "，".join(market.words)
-    await cat.send(f"市场已开放，持续{config.word_tax.open_duration}s，本轮文字池为\n{info}")
+        market = cat.get_data(GroupMarket)
+        market.refresh(session, cat.channel.id)
+        info = "，".join(market.words)
+        await cat.send(f"市场已开放，持续{config.word_tax.open_duration}s，本轮文字池为\n{info}")
+        session.commit()
 
 
 @cat.on_cmd(cmds="购买文字")
 async def buy_words():
     '''花费金钱购买一次福袋，获得3个随机文字'''
-    market = cat.get_data(GroupMarket)
-    if not market.is_open():
-        await cat.send("市场未开放，请联系管理员开放市场后再购买")
-    else:
-        money = get_money(cat.channel.id, cat.user.id)
-        money.value -= config.word_tax.buy_price
-        words = market.buy(
-            cat.channel.id, cat.user.id, cat.user.name)
-        info = "，".join(words)
-        await cat.send(f"[{cat.user.name}] 花费{config.word_tax.buy_price}金，购买了文字 {info}")
+    with get_session() as session:
+        market = cat.get_data(GroupMarket)
+        if not market.is_open():
+            await cat.send("市场未开放，请联系管理员开放市场后再购买")
+        else:
+            money = get_money(session, cat.channel.id, cat.user.id)
+            money.money -= config.word_tax.buy_price
+            words = market.buy(
+                session,
+                cat.channel.id,
+                cat.user.id,
+                cat.user.name
+            )
+            info = "，".join(words)
+            await cat.send(f"[{cat.user.name}] 花费{config.word_tax.buy_price}金，购买了文字 {info}")
+        session.commit()
 
 
 @cat.on_cmd(cmds="我的文字")
@@ -203,26 +228,29 @@ async def get_tax():
     if not check_dict:
         return
 
-    user_moneys: dict[int, Money] = {}
-    for users in check_dict.values():
-        for u in users:
-            if u.user_id not in user_moneys:
-                user_moneys[u.user_id] = get_money(u.group_id, u.user_id)
-    user_moneys[cat.user.id] = get_money(
-        cat.channel.id, cat.user.id)
+    with get_session() as session:
+        user_moneys: dict[int, Money] = {}
+        for users in check_dict.values():
+            for u in users:
+                if u.user_id not in user_moneys:
+                    user_moneys[u.user_id] = get_money(
+                        session, u.group_id, u.user_id)
+        user_moneys[cat.user.id] = get_money(
+            session, cat.channel.id, cat.user.id)
 
-    for w in check_dict.keys():
-        msg = msg.replace(w, f"[{w}]")
-    infos = [msg]
+        for w in check_dict.keys():
+            msg = msg.replace(w, f"[{w}]")
+        infos = [msg]
 
-    for w, users in check_dict.items():
-        t = int(config.word_tax.tax / len(users))
-        tt = t*len(users)
-        user_moneys[cat.user.id].value -= tt
-        for u in users:
-            user_moneys[u.user_id].value += t
-        names = [u.uname for u in users]
-        infos.append(f"[{w}] 所有者：{names}，您为此字付费{tt}金")
+        for w, users in check_dict.items():
+            t = int(config.word_tax.tax / len(users))
+            tt = t*len(users)
+            user_moneys[cat.user.id].money -= tt
+            for u in users:
+                user_moneys[u.user_id].money += t
+            names = [u.uname for u in users]
+            infos.append(f"[{w}] 所有者：{names}，您为此字付费{tt}金")
 
-    if config.word_tax.tax_notice:
-        await cat.send_many(infos)
+        if config.word_tax.tax_notice:
+            await cat.send_many(infos)
+        session.commit()

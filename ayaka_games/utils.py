@@ -86,10 +86,10 @@ async def download():
     '''检查资源更新'''
     asyncio.create_task(downloader.download_data())
 
-T = TypeVar("T", bound=type[SQLModel])
+T = TypeVar("T", bound=SQLModel)
 
 
-def get_or_create(session: Session, model: T, **kwargs) -> T:
+def get_or_create(session: Session, model: type[T], **kwargs) -> T:
     statement = select(model).filter_by(**kwargs)
     results = session.exec(statement)
     instance = results.one_or_none()

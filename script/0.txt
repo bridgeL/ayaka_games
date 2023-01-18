@@ -8,3 +8,4 @@ s inca
 s query
 s suspect
 s pray
+s tax
