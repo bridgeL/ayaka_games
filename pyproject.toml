@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ayaka_games"
-version = "0.1.0b0"
+version = "0.1.0b1"
 description = "ayaka小游戏合集"
 authors = ["Su <wxlxy316@163.com>"]
 license = "MIT"
