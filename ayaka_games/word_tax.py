@@ -3,7 +3,7 @@ from time import time
 from pydantic import BaseModel, Field
 from ayaka import AyakaCat, AyakaUserDB, AyakaGroupDB, AyakaDB, load_data_from_file
 from .bag import get_money, Money
-from .data import downloader, config
+from .utils import downloader, config
 
 cat = AyakaCat("文字税")
 cat.help = '''知识付费（doge
@@ -40,7 +40,7 @@ class GroupMarket(BaseModel):
 
     def __init__(self, **data) -> None:
         super().__init__(**data)
-        self.load(cat.current.session_id)
+        self.load(cat.channel.id)
 
     def load(self, group_id):
         if self.first:
@@ -137,13 +137,13 @@ async def open_word_market():
 @cat.on_cmd(cmds=["开放文字市场", "刷新文字市场"])
 async def open_word_market():
     '''刷新文字市场，开放福袋购买'''
-    user = await cat.get_user(cat.current.sender_id)
+    user = await cat.get_user(cat.user.id)
     if user.role not in ["owner", "admin"]:
         await cat.send("请联系管理员开放市场，您没有权限")
         return
 
     market = cat.get_data(GroupMarket)
-    market.refresh(cat.current.session_id)
+    market.refresh(cat.channel.id)
     info = "，".join(market.words)
     await cat.send(f"市场已开放，持续{config.word_tax.open_duration}s，本轮文字池为\n{info}")
 
@@ -155,21 +155,21 @@ async def buy_words():
     if not market.is_open():
         await cat.send("市场未开放，请联系管理员开放市场后再购买")
     else:
-        money = get_money(cat.current.session_id, cat.current.sender_id)
+        money = get_money(cat.channel.id, cat.user.id)
         money.value -= config.word_tax.buy_price
         words = market.buy(
-            cat.current.session_id, cat.current.sender_id, cat.current.sender_name)
+            cat.channel.id, cat.user.id, cat.user.name)
         info = "，".join(words)
-        await cat.send(f"[{cat.current.sender_name}] 花费{config.word_tax.buy_price}金，购买了文字 {info}")
+        await cat.send(f"[{cat.user.name}] 花费{config.word_tax.buy_price}金，购买了文字 {info}")
 
 
 @cat.on_cmd(cmds="我的文字")
 async def buy_words():
     '''查看自己的文字'''
     market = cat.get_data(GroupMarket)
-    words = market.get_words(cat.current.sender_id)
+    words = market.get_words(cat.user.id)
     info = "，".join(words)
-    await cat.send(f"[{cat.current.sender_name}]当前拥有 {info}")
+    await cat.send(f"[{cat.user.name}]当前拥有 {info}")
 
 
 @cat.on_cmd(cmds="所有文字")
@@ -198,8 +198,8 @@ async def get_tax():
     if not market.is_valid():
         return
 
-    msg = cat.current.arg
-    check_dict = market.check(msg, cat.current.sender_id)
+    msg = cat.arg
+    check_dict = market.check(msg, cat.user.id)
     if not check_dict:
         return
 
@@ -208,8 +208,8 @@ async def get_tax():
         for u in users:
             if u.user_id not in user_moneys:
                 user_moneys[u.user_id] = get_money(u.group_id, u.user_id)
-    user_moneys[cat.current.sender_id] = get_money(
-        cat.current.session_id, cat.current.sender_id)
+    user_moneys[cat.user.id] = get_money(
+        cat.channel.id, cat.user.id)
 
     for w in check_dict.keys():
         msg = msg.replace(w, f"[{w}]")
@@ -218,7 +218,7 @@ async def get_tax():
     for w, users in check_dict.items():
         t = int(config.word_tax.tax / len(users))
         tt = t*len(users)
-        user_moneys[cat.current.sender_id].value -= tt
+        user_moneys[cat.user.id].value -= tt
         for u in users:
             user_moneys[u.user_id].value += t
         names = [u.uname for u in users]

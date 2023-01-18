@@ -7,3 +7,4 @@ s get30
 s inca
 s query
 s suspect
+s pray

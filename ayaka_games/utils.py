@@ -1,6 +1,7 @@
 import json
 import asyncio
-from typing import Awaitable, Callable
+from typing import Awaitable, Callable, TypeVar
+from sqlmodel import Session, SQLModel, select
 from pathlib import Path
 from pydantic import BaseModel
 from loguru import logger
@@ -84,3 +85,16 @@ downloader = Downloader()
 async def download():
     '''检查资源更新'''
     asyncio.create_task(downloader.download_data())
+
+T = TypeVar("T", bound=type[SQLModel])
+
+
+def get_or_create(session: Session, model: T, **kwargs) -> T:
+    statement = select(model).filter_by(**kwargs)
+    results = session.exec(statement)
+    instance = results.one_or_none()
+    if not instance:
+        instance = model(**kwargs)
+        session.add(instance)
+        session.commit()
+    return instance

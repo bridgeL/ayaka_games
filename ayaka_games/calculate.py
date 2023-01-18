@@ -3,9 +3,9 @@ import re
 from random import choice
 from pydantic import BaseModel
 from loguru import logger
-from ayaka import AyakaCat, load_data_from_file
+from ayaka import AyakaCat, load_data_from_file, get_session
 from .bag import get_money
-from .data import downloader, config
+from .utils import downloader, config
 
 cat = AyakaCat("24点")
 cat.help = '''
@@ -61,12 +61,12 @@ async def set_mode_menu():
 @cat.on_text(states="切换模式")
 async def set_mode():
     '''更多挑战'''
-    if not cat.current.nums or cat.current.nums[0] not in questions_bin:
+    if not cat.nums or cat.nums[0] not in questions_bin:
         await cat.send("输入不合法")
         return
 
     cache = cat.get_data(Cache)
-    cache.n = cat.current.nums[0]
+    cache.n = cat.nums[0]
     await cat.send(f"切换模式为 {cache.n}点")
     cat.state = "计算"
     await select_question()
@@ -107,7 +107,7 @@ async def show_solutions():
 async def calculate_exp():
     '''请使用正确的表达式，例如 (1+2)*(3+3)'''
     cache = cat.get_data(Cache)
-    exp = cat.current.arg
+    exp = cat.arg
 
     try:
         exp = pre_check(exp, cache.nums)
@@ -129,9 +129,15 @@ async def calculate_exp():
 
     await cat.send("正确！")
     reward = config.calculate_reward
-    money = get_money(group_id=cat.current.session_id,
-                      user_id=cat.current.sender_id)
-    money.value += reward
+    with get_session() as session:
+        money = get_money(
+            session,
+            group_id=cat.channel.id,
+            user_id=cat.user.id
+        )
+        money.money += reward
+        session.commit()
+
     await cat.send(f"奖励{reward}金")
     await select_question()
 
@@ -366,7 +372,7 @@ def calc(exp):
 @cat.on_cmd(cmds="测试24点", always=True)
 async def test_exp():
     '''<表达式>'''
-    exp = str(cat.current.arg)
+    exp = str(cat.arg)
     try:
         r = calc(exp)
     except Exception as e:

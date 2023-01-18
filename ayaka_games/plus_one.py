@@ -191,8 +191,8 @@ async def cat_close():
 async def inquiry():
     '''查看你目前的时间'''
     game = cat.get_data(Game)
-    time = game.player_group.get_time(cat.current.sender_id)
-    await cat.send(f"[{cat.current.sender_name}]目前的时间：{time}")
+    time = game.player_group.get_time(cat.user.id)
+    await cat.send(f"[{cat.user.name}]目前的时间：{time}")
 
 
 @cat.on_cmd(cmds="boss", states="idle")
@@ -231,11 +231,11 @@ async def plus():
     game = cat.get_data(Game)
 
     # 玩家
-    time = game.player_group.change_time(cat.current.sender_id, 1)
-    await cat.send(f"[{cat.current.sender_name}]的时间增加了！目前为：{time}")
+    time = game.player_group.change_time(cat.user.id, 1)
+    await cat.send(f"[{cat.user.name}]的时间增加了！目前为：{time}")
 
     # boss
-    game.boss.add_power(cat.current.sender_id)
+    game.boss.add_power(cat.user.id)
     await cat.send(game.boss.state)
 
     # boss 能量不够

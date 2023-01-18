@@ -1,6 +1,6 @@
 from enum import Enum
 from random import randint, choice, shuffle
-from ayaka import AyakaCat, AyakaSession
+from ayaka import AyakaCat, AyakaChannel
 
 cat = AyakaCat("印加宝藏")
 cat.help = "欢迎使用印加宝藏2.0"
@@ -317,7 +317,7 @@ async def game_entrance():
     model.reset()
 
     # 操作
-    InitPlayer(model, cat.current.sender_id, cat.current.sender_name)
+    InitPlayer(model, cat.user.id, cat.user.name)
     await cat.send(ruledoc)
 
 
@@ -332,12 +332,12 @@ async def exit_incan():
 @cat.on_cmd(cmds=['go', 'forward'], states="gaming")
 async def go_handle():
     '''前进'''
-    origin = cat.current.event.origin
+    origin = cat.event.origin_channel
     if origin:
-        await cat.base_send(origin.session, "收到")
+        await cat.base_send(origin, "收到")
 
     model = cat.get_data(Incan)
-    uid = cat.current.sender_id
+    uid = cat.user.id
     if model.members[uid]['status'] == 0:
         model.members[uid]['status'] = 1
     if await Gaming(model):
@@ -347,12 +347,12 @@ async def go_handle():
 @cat.on_cmd(cmds=['back', 'retreat', 'escape'], states="gaming")
 async def handle():
     '''撤退'''
-    origin = cat.current.event.origin
+    origin = cat.event.origin_channel
     if origin:
-        await cat.base_send(origin.session, "收到")
+        await cat.base_send(origin, "收到")
 
     model = cat.get_data(Incan)
-    uid = cat.current.sender_id
+    uid = cat.user.id
     if model.members[uid]['status'] == 0:
         model.members[uid]['status'] = 2
     if await Gaming(model):
@@ -369,15 +369,15 @@ async def handle():
     await cat.send(f'第1轮：{model.temples.Draw().name}')
 
     for uid in model.members:
-        cat.add_listener(AyakaSession(type="private", id=uid))
+        cat.add_listener(AyakaChannel(type="private", id=uid))
 
 
 @cat.on_cmd(cmds="join", states="room")
 async def handle():
     '''加入游戏'''
     model = cat.get_data(Incan)
-    name = cat.current.sender_name
-    uid = cat.current.sender_id
+    name = cat.user.name
+    uid = cat.user.id
 
     if uid in model.members:
         await cat.send(f'{name}已经在小队中了，无需重复加入')

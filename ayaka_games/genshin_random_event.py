@@ -5,7 +5,7 @@ from random import choice
 from typing import Literal
 from pydantic import BaseModel
 from ayaka import AyakaCat, load_data_from_file
-from .data import downloader
+from .utils import downloader
 
 cat = AyakaCat("原神随机事件")
 
@@ -72,7 +72,7 @@ async def load():
 @cat.on_cmd(cmds="原神随机事件")
 async def _():
     '''带参数可以自定义事件，例如：原神随机事件 喝水'''
-    event = str(cat.current.arg)
+    event = str(cat.arg)
     if event:
         await cat.send(group.get_value(data={"事件": event}))
     else:

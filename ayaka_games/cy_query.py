@@ -3,7 +3,7 @@
 '''
 from random import sample
 from ayaka import AyakaCat, load_data_from_file
-from .data import downloader
+from .utils import downloader
 
 cat = AyakaCat("成语查询")
 cat.help = '''
@@ -33,7 +33,7 @@ async def show_word(word: str):
 @cat.on_cmd(cmds="搜索成语")
 async def handle_3():
     '''搜索所有相关的成语，可输入多个关键词更准确'''
-    args = [arg for arg in cat.current.args if isinstance(arg, str)]
+    args = [arg for arg in cat.args if isinstance(arg, str)]
 
     if not args:
         await cat.send("没有输入关键词")

@@ -182,10 +182,10 @@ cat.set_rest_cmds(cmds=["exit", "退出"])
 @cat.on_cmd(cmds=['divine', '占卜'], states="idle")
 async def pray():
     '''花费1玛娜，祈求神的回应'''
-    usermana = get_user_mana(cat.current.session_id, cat.current.sender_id)
-    god = get_mana_god(cat.current.session_id)
+    usermana = get_user_mana(cat.channel.id, cat.user.id)
+    god = get_mana_god(cat.channel.id)
 
-    name = cat.current.sender_name
+    name = cat.user.name
 
     mana = usermana.mana
     if mana <= 0:
@@ -207,15 +207,15 @@ async def pray():
 @cat.on_cmd(cmds=['pray', '祈祷'], states="idle")
 async def handle():
     '''n 花费n玛娜，感受神的呼吸'''
-    usermana = get_user_mana(cat.current.session_id, cat.current.sender_id)
-    god = get_mana_god(cat.current.session_id)
+    usermana = get_user_mana(cat.channel.id, cat.user.id)
+    god = get_mana_god(cat.channel.id)
 
-    if not cat.params.nums:
+    if not cat.nums:
         await cat.send("请使用 pray <数字>")
         return
 
-    arg = cat.params.nums[0]
-    name = cat.current.sender_name
+    arg = cat.nums[0]
+    name = cat.user.name
 
     mana = usermana.mana
     if mana < arg:
@@ -249,14 +249,14 @@ async def handle():
 async def handle():
     '''正数买入，负数卖出，0查询'''
 
-    if not cat.params.nums:
+    if not cat.nums:
         await cat.send("请使用 mana <数字>")
         return
 
-    usermana = get_user_mana(cat.current.session_id, cat.current.sender_id)
-    usermoney = get_money(cat.current.session_id, cat.current.sender_id)
-    num = cat.params.nums[0]
-    name = cat.current.sender_name
+    usermana = get_user_mana(cat.channel.id, cat.user.id)
+    usermoney = get_money(cat.channel.id, cat.user.id)
+    num = cat.nums[0]
+    name = cat.user.name
 
     mana = usermana.mana
     money = usermoney.value

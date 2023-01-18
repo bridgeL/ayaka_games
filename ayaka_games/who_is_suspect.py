@@ -2,8 +2,8 @@
     谁是卧底？
 '''
 from random import choice, randint
-from ayaka import AyakaCat, load_data_from_file, AyakaSession
-from .data import downloader
+from ayaka import AyakaCat, load_data_from_file, AyakaChannel
+from .utils import downloader
 
 
 words_list: list[tuple[str, str]] = []
@@ -237,8 +237,8 @@ class Game:
 
 async def check_friend(uid: int):
     try:
-        session = AyakaSession(type="private", id=uid)
-        await cat.base_send(session, "好友测试，无需回复")
+        channel = AyakaChannel(type="private", id=uid)
+        await cat.base_send(channel, "好友测试，无需回复")
     except:
         return False
     else:
@@ -271,11 +271,11 @@ async def join():
     '''加入房间'''
     game = cat.get_data(Game)
     # 校验好友
-    if not await check_friend(cat.current.sender_id):
+    if not await check_friend(cat.user.id):
         await cat.send("只有bot的好友才可以加入房间，因为游戏需要私聊关键词")
         return
 
-    f, info = game.join(cat.current.sender_id, cat.current.sender_name)
+    f, info = game.join(cat.user.id, cat.user.name)
     await cat.send(info)
 
 
@@ -283,7 +283,7 @@ async def join():
 async def leave():
     '''离开房间'''
     game = cat.get_data(Game)
-    f, info = game.leave(cat.current.sender_id)
+    f, info = game.leave(cat.user.id)
     await cat.send(info)
 
     if f and game.player_cnt == 0:
@@ -303,8 +303,8 @@ async def start():
 
     cat.state = "play"
     for p in game.players:
-        session = AyakaSession(type="private", id=p.uid)
-        await cat.base_send(session, p.word)
+        channel = AyakaChannel(type="private", id=p.uid)
+        await cat.base_send(channel, p.word)
 
 
 @cat.on_cmd(cmds=["房间", "room"], states="room")
@@ -326,13 +326,13 @@ async def play_info():
 async def vote():
     '''请at你要投票的对象，一旦投票无法更改'''
     game = cat.get_data(Game)
-    if not cat.current.arg:
+    if not cat.arg:
         return
 
-    uid = str(cat.params.nums[0])
+    uid = str(cat.nums[0])
 
     # 投票
-    f, info = game.vote(cat.current.sender_id, uid)
+    f, info = game.vote(cat.user.id, uid)
     await cat.send(info)
 
     # 投票失败

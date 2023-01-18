@@ -201,7 +201,7 @@ async def cat_entrance():
 
     game = cat.get_data(Game)
     game.reset()
-    f, info = game.join(cat.current.sender_id, cat.current.sender_name)
+    f, info = game.join(cat.user.id, cat.user.name)
     await cat.send(info)
 
 cat.set_rest_cmds(cmds=["退出", "exit"])
@@ -212,7 +212,7 @@ cat.on_cmd(cmds=["help", "帮助"], states="*")(cat.send_help)
 async def join():
     '''加入房间'''
     game = cat.get_data(Game)
-    f, info = game.join(cat.current.sender_id, cat.current.sender_name)
+    f, info = game.join(cat.user.id, cat.user.name)
     await cat.send(info)
 
 
@@ -220,7 +220,7 @@ async def join():
 async def leave():
     '''离开房间'''
     game = cat.get_data(Game)
-    f, info = game.leave(cat.current.sender_id)
+    f, info = game.leave(cat.user.id)
     await cat.send(info)
 
     if f and game.player_cnt == 0:
@@ -261,11 +261,11 @@ async def play_info():
 async def quote():
     '''报价叫牌，要么为0，要么比上一个人高，如果全员报价为0，则本轮庄家获得该牌'''
     game = cat.get_data(Game)
-    if not cat.current.nums:
+    if not cat.nums:
         await cat.send("请输入一个数字")
         return
-    num = cat.current.nums[0]
-    f, info = game.quote(cat.current.sender_id, num)
+    num = cat.nums[0]
+    f, info = game.quote(cat.user.id, num)
 
     # 报价失败
     if not f:
