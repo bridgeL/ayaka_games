@@ -114,16 +114,17 @@ class GroupMarket(BaseModel):
 
     def check(self, msg: str, user_id: int):
         check_dict: dict[str, list[UserWord]] = {}
+        # 排除没抽的人
         for u in self.users:
             if u.user_id == user_id:
                 break
         else:
-            # 排除没抽的人
             return {}
 
         for u in self.users:
-            if u.user_id == user_id:
-                continue
+            # # 不要排除自己
+            # if u.user_id == user_id:
+            #     continue
             if u.word not in check_dict:
                 check_dict[u.word] = [u]
             else:
@@ -249,8 +250,14 @@ async def get_tax():
             for u in users:
                 user_moneys[u.user_id].money += t
             names = [u.uname for u in users]
+            if names == [cat.user.name]:
+                continue
+            if cat.user.name in names:
+                tt -= t
             infos.append(f"[{w}] 所有者：{names}，您为此字付费{tt}金")
 
         if config.word_tax.tax_notice:
-            await cat.send_many(infos)
+            if len(infos) > 1:
+                await cat.send_many(infos)
+
         session.commit()
