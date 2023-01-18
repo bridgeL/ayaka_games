@@ -329,7 +329,7 @@ async def vote():
     if not cat.arg:
         return
 
-    uid = str(cat.nums[0])
+    uid = cat.event.at or str(cat.nums[0])
 
     # 投票
     f, info = game.vote(cat.user.id, uid)
