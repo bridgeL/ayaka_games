@@ -54,7 +54,7 @@ class GroupMarket(BaseModel):
 
     def __init__(self, **data) -> None:
         super().__init__(**data)
-        self.load(cat.channel.id)
+        self.load(cat.group.id)
 
     def load(self, group_id):
         if self.first:
@@ -162,7 +162,7 @@ async def open_word_market():
             return
 
         market = cat.get_data(GroupMarket)
-        market.refresh(session, cat.channel.id)
+        market.refresh(session, cat.group.id)
         info = "，".join(market.words)
         await cat.send(f"市场已开放，持续{config.word_tax.open_duration}s，本轮文字池为\n{info}")
         session.commit()
@@ -176,11 +176,11 @@ async def buy_words():
         if not market.is_open():
             await cat.send("市场未开放，请联系管理员开放市场后再购买")
         else:
-            money = get_money(session, cat.channel.id, cat.user.id)
+            money = get_money(session, cat.group.id, cat.user.id)
             money.money -= config.word_tax.buy_price
             words = market.buy(
                 session,
-                cat.channel.id,
+                cat.group.id,
                 cat.user.id,
                 cat.user.name
             )
@@ -190,7 +190,7 @@ async def buy_words():
 
 
 @cat.on_cmd(cmds="我的文字")
-async def buy_words():
+async def my_words():
     '''查看自己的文字'''
     market = cat.get_data(GroupMarket)
     words = market.get_words(cat.user.id)
@@ -199,7 +199,7 @@ async def buy_words():
 
 
 @cat.on_cmd(cmds="所有文字")
-async def buy_words():
+async def all_words():
     '''查看所有人的文字'''
     market = cat.get_data(GroupMarket)
     if market.is_valid():
@@ -237,7 +237,7 @@ async def get_tax():
                     user_moneys[u.user_id] = get_money(
                         session, u.group_id, u.user_id)
         user_moneys[cat.user.id] = get_money(
-            session, cat.channel.id, cat.user.id)
+            session, cat.group.id, cat.user.id)
 
         for w in check_dict.keys():
             msg = msg.replace(w, f"[{w}]")

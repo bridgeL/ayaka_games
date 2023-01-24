@@ -28,13 +28,13 @@ async def checkin():
     date = str(datetime.datetime.now().date())
 
     with get_session() as session:
-        checkin = get_checkin(session, cat.channel.id, cat.user.id)
+        checkin = get_checkin(session, cat.group.id, cat.user.id)
         if date == checkin.last_date:
             await cat.send(f"[{cat.user.name}] 今天已经签到过了")
             return
 
         # 签到奖励
-        money = get_money(session, cat.channel.id, cat.user.id)
+        money = get_money(session, cat.group.id, cat.user.id)
         money.money += config.checkin_reward
 
         # 更新日期

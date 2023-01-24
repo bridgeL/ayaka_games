@@ -2,7 +2,7 @@
     谁是卧底？
 '''
 from random import choice, randint
-from ayaka import AyakaCat, load_data_from_file, AyakaChannel
+from ayaka import AyakaCat, load_data_from_file
 from .utils import downloader
 
 
@@ -237,8 +237,7 @@ class Game:
 
 async def check_friend(uid: int):
     try:
-        channel = AyakaChannel(type="private", id=uid)
-        await cat.base_send(channel, "好友测试，无需回复")
+        await cat.send_private(uid, "好友测试，无需回复")
     except:
         return False
     else:
@@ -303,8 +302,7 @@ async def start():
 
     cat.state = "play"
     for p in game.players:
-        channel = AyakaChannel(type="private", id=p.uid)
-        await cat.base_send(channel, p.word)
+        await cat.send_private(p.uid, p.word)
 
 
 @cat.on_cmd(cmds=["房间", "room"], states="room")

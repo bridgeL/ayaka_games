@@ -132,7 +132,7 @@ async def calculate_exp():
     with get_session() as session:
         money = get_money(
             session,
-            group_id=cat.channel.id,
+            group_id=cat.group.id,
             user_id=cat.user.id
         )
         money.money += reward

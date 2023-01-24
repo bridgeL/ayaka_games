@@ -29,5 +29,5 @@ async def show_bag():
             uid = user.id
             name = user.name
 
-        money = get_money(session, cat.channel.id, uid)
+        money = get_money(session, cat.group.id, uid)
         await cat.send(f"[{name}]当前有 {money.money}金")

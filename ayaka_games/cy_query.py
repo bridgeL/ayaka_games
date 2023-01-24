@@ -31,7 +31,7 @@ async def show_word(word: str):
 
 
 @cat.on_cmd(cmds="搜索成语")
-async def handle_3():
+async def search():
     '''搜索所有相关的成语，可输入多个关键词更准确'''
     args = [arg for arg in cat.args if isinstance(arg, str)]
 

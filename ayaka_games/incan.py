@@ -1,6 +1,6 @@
 from enum import Enum
 from random import randint, choice, shuffle
-from ayaka import AyakaCat, AyakaChannel
+from ayaka import AyakaCat
 
 cat = AyakaCat("印加宝藏")
 cat.help = "欢迎使用印加宝藏2.0"
@@ -324,17 +324,16 @@ async def game_entrance():
 @cat.on_cmd(cmds=['exit', 'quit', "退出"], states="*")
 async def exit_incan():
     '''退出游戏'''
-    cat.remove_listener()
+    cat.remove_private_redirect()
     await cat.send('游戏结束~下次再见~')
     await cat.rest()
 
 
 @cat.on_cmd(cmds=['go', 'forward'], states="gaming")
-async def go_handle():
+async def go():
     '''前进'''
-    origin = cat.event.origin_channel
-    if origin:
-        await cat.base_send(origin, "收到")
+    if cat.event.private_forward_id:
+        await cat.send_private(cat.event.private_forward_id, "收到")
 
     model = cat.get_data(Incan)
     uid = cat.user.id
@@ -345,11 +344,10 @@ async def go_handle():
 
 
 @cat.on_cmd(cmds=['back', 'retreat', 'escape'], states="gaming")
-async def handle():
+async def back():
     '''撤退'''
-    origin = cat.event.origin_channel
-    if origin:
-        await cat.base_send(origin, "收到")
+    if cat.event.private_forward_id:
+        await cat.send_private(cat.event.private_forward_id, "收到")
 
     model = cat.get_data(Incan)
     uid = cat.user.id
@@ -360,7 +358,7 @@ async def handle():
 
 
 @cat.on_cmd(cmds=['start', 'run'], states="room")
-async def handle():
+async def start():
     '''开始游戏'''
     model = cat.get_data(Incan)
     cat.state = "gaming"
@@ -369,11 +367,11 @@ async def handle():
     await cat.send(f'第1轮：{model.temples.Draw().name}')
 
     for uid in model.members:
-        cat.add_listener(AyakaChannel(type="private", id=uid))
+        cat.add_private_redirect(uid)
 
 
 @cat.on_cmd(cmds="join", states="room")
-async def handle():
+async def join():
     '''加入游戏'''
     model = cat.get_data(Incan)
     name = cat.user.name
@@ -387,7 +385,7 @@ async def handle():
 
 
 @cat.on_cmd(cmds=["status", "状态"], states="room")
-async def handle():
+async def room_status():
     '''查看状态'''
     model = cat.get_data(Incan)
     ans = f'队伍玩家有：<{">, <".join([model.members[uid]["name"] for uid in model.members])}>'
@@ -395,7 +393,7 @@ async def handle():
 
 
 @cat.on_cmd(cmds=["status", "状态"], states="gaming")
-async def handle():
+async def game_status():
     '''查看状态'''
     model = cat.get_data(Incan)
 
@@ -420,6 +418,6 @@ async def handle():
 
 
 @cat.on_cmd(cmds=['rule', 'document', 'doc'], states="*")
-async def handle():
+async def rule():
     '''查看规则'''
     await cat.send(ruledoc)

@@ -1,6 +1,6 @@
 <div align="center">
 
-# Ayaka小游戏合集 - 0.1.0
+# Ayaka小游戏合集 - 0.2.0b0
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ayaka_games)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/ayaka_games)

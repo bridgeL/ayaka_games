@@ -60,7 +60,7 @@ def get_dragon_user_data(session, dragon_name: str):
     return get_or_create(
         session, DragonUserData,
         dragon_name=dragon_name,
-        group_id=cat.channel.id,
+        group_id=cat.group.id,
         user_id=cat.user.id
     )
 
@@ -112,7 +112,7 @@ async def handle():
                         # 修改金钱
                         usermoney = get_money(
                             session,
-                            group_id=cat.channel.id,
+                            group_id=cat.group.id,
                             user_id=cat.user.id
                         )
                         usermoney.money += config.dragon_reward
@@ -152,7 +152,7 @@ async def list_all():
 @cat.on_cmd(cmds="data", states="idle")
 async def show_data():
     '''展示你的答题数据'''
-    gid = cat.channel.id
+    gid = cat.group.id
     uid = cat.user.id
 
     with get_session() as session:
@@ -178,7 +178,7 @@ async def show_rank():
 
     # SELECT * from dragon_user_data ORDER BY dragon_name, cnt DESC
     with get_session() as session:
-        stmt = select(DragonUserData).filter_by(group_id=cat.channel.id).order_by(
+        stmt = select(DragonUserData).filter_by(group_id=cat.group.id).order_by(
             DragonUserData.dragon_name, desc(DragonUserData.cnt))
         results = session.exec(stmt)
         for r in results:

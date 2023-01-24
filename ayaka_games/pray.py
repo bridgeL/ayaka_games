@@ -25,7 +25,7 @@ def get_diff():
 
 
 @cat.on_cmd(cmds=["pray", "祈祷"])
-async def handle():
+async def pray():
     '''为群里随机一人（除了自己）祈祷随机金币'''
     nodes = await cat.get_users()
 
@@ -41,7 +41,7 @@ async def handle():
 
     diff = get_diff()
     with get_session() as session:
-        money = get_money(session, cat.channel.id, uid)
+        money = get_money(session, cat.group.id, uid)
         money.money += diff
         session.commit()
 
