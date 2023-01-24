@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ayaka_games"
-version = "0.2.0b1"
+version = "0.2.0"
 description = "ayaka小游戏合集"
 authors = ["Su <wxlxy316@163.com>"]
 license = "MIT"
@@ -13,7 +13,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-ayaka = "^0.0.2.0b4"
+ayaka = "^0.0.2.0"
 pypinyin = "^0.47.1"
 
 [build-system]
