@@ -5,7 +5,10 @@ from sqlmodel import Session, SQLModel, select
 from pathlib import Path
 from pydantic import BaseModel
 from loguru import logger
-from ayaka import resource_download_by_res_info, ResInfo, resource_download, AyakaConfig, bridge
+from ayaka import resource_download_by_res_info, ResInfo, resource_download, AyakaConfig, get_adapter
+
+
+T = TypeVar("T", bound=SQLModel)
 
 
 class WordTaxConfig(BaseModel):
@@ -81,12 +84,11 @@ class Downloader:
 downloader = Downloader()
 
 
-@bridge.on_startup
 async def download():
     '''检查资源更新'''
     asyncio.create_task(downloader.download_data())
 
-T = TypeVar("T", bound=SQLModel)
+get_adapter().on_startup(download)
 
 
 def get_or_create(session: Session, model: type[T], **kwargs) -> T:
