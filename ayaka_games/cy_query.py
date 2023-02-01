@@ -1,7 +1,7 @@
 '''
     成语查询
 '''
-from random import sample
+from random import choice, sample
 from ayaka import AyakaCat, load_data_from_file
 from .utils import downloader
 
@@ -30,10 +30,13 @@ async def show_word(word: str):
         await cat.send("没有找到相关信息")
 
 
-@cat.on_cmd(cmds="搜索成语")
+@cat.on_cmd(cmds=["搜索成语", "查找成语", "查询成语"])
 async def search():
     '''搜索所有相关的成语，可输入多个关键词更准确'''
-    args = [arg for arg in cat.args if isinstance(arg, str)]
+    if cat.event.reply:
+        args = [cat.event.reply]
+    else:
+        args = [arg for arg in cat.args if isinstance(arg, str)]
 
     if not args:
         await cat.send("没有输入关键词")
@@ -66,3 +69,27 @@ async def search():
     else:
         for word in words:
             await show_word(word)
+
+
+@cat.on_cmd(cmds="随机成语")
+async def search():
+    '''随机一个相关的成语，可输入多个关键词更准确'''
+    args = [arg for arg in cat.args if isinstance(arg, str)]
+
+    if not args:
+        await cat.send("没有输入关键词")
+        return
+
+    words = []
+    for _word in search_dict:
+        for arg in args:
+            if arg not in _word:
+                break
+        else:
+            words.append(_word)
+
+    if not words:
+        await cat.send("没有找到相关信息")
+        return
+
+    await cat.send(choice(words))

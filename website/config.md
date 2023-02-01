@@ -4,7 +4,6 @@
 
 ```
 command_start = [""]
-command_sep = [" "]
 ```
 
 ## 记得重启

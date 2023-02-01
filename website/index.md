@@ -10,7 +10,7 @@
 **特别感谢**  [@灯夜](https://github.com/lunexnocty/Meiri) 大佬的印加宝藏
 
 <div class="demo">
-"user" 说：猫猫列表
+"user" 说：猫猫帮助
 "Bot" 说：已加载的猫猫列表
 - [24点]
 - [mana]
