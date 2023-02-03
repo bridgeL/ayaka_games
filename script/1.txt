@@ -1,0 +1,3 @@
+g 100 1 checkin
+g 100 2 checkin
+g 100 3 checkin

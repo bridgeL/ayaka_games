@@ -1,6 +1,6 @@
 from ayaka import UserDBBase
 from .bag import Money
-from ..utils import subscribe, Reputation
+from ..utils import subscribe, set_over_type_reputaion
 
 
 @subscribe.cls_property_watch
@@ -44,176 +44,62 @@ async def _(old_value: int, new_value: int, money: Money):
     if new_value < ma.min:
         ma.min = new_value
 
-    if ma.rise_up_cnt == 1:
-        await Reputation.add(
-            gid, uid, "money.rise_up_cnt",
-            "东山再起", "清空所有负资产", 1
-        )
 
-    if ma.rise_up_cnt == 2:
-        await Reputation.add(
-            gid, uid, "money.rise_up_cnt",
-            "顽强不屈", "第二次清空所有负资产", 2
-        )
+set_over_type_reputaion(
+    cls_attr=MoneyAnalyse.rise_up_cnt,
+    rs=[
+        ("东山再起", "清空所有负资产", 1),
+        ("顽强不屈", "第二次清空所有负资产", 2),
+        ("永不言弃", "第三次清空所有负资产", 3),
+    ]
+)
 
-    if ma.rise_up_cnt == 3:
-        await Reputation.add(
-            gid, uid, "money.rise_up_cnt",
-            "永不言弃", "第三次清空所有负资产", 3
-        )
+set_over_type_reputaion(
+    cls_attr=MoneyAnalyse.fail_down_cnt,
+    rs=[
+        ("家徒四壁", "失去所有资产", 1),
+        ("常败将军", "第二次失去所有资产", 2),
+        ("土块", "第三次失去所有资产", 3),
+    ]
+)
 
-    if ma.fail_down_cnt == 1:
-        await Reputation.add(
-            gid, uid, "money.fail_down_cnt",
-            "家徒四壁", "失去所有资产", 1
-        )
+set_over_type_reputaion(
+    cls_attr=MoneyAnalyse.max,
+    rs=[
+        ("小有成就", "资产最大值突破10万", 100_000),
+        ("百万富翁", "资产最大值突破100万", 1_000_000),
+        ("路灯候选", "资产最大值突破1000万", 10_000_000),
+        ("小目标", "资产最大值突破1亿", 100_000_000),
+    ]
+)
 
-    if ma.fail_down_cnt == 2:
-        await Reputation.add(
-            gid, uid, "money.fail_down_cnt",
-            "常败将军", "第二次失去所有资产", 2
-        )
+set_over_type_reputaion(
+    cls_attr=MoneyAnalyse.min,
+    rs=[
+        ("小有成就", "资产最小值突破负10万", 100_000),
+        ("百万负翁", "资产最小值突破负100万", 1_000_000),
+        ("银行贵宾", "资产最小值突破负1000万", 10_000_000),
+        ("银行亲爹", "资产最小值突破负1亿", 100_000_000),
+    ],
+    reverse=True
+)
 
-    if ma.fail_down_cnt == 3:
-        await Reputation.add(
-            gid, uid, "money.fail_down_cnt",
-            "土块", "第三次失去所有资产", 3
-        )
+set_over_type_reputaion(
+    cls_attr=MoneyAnalyse.sum_get,
+    rs=[
+        ("第一桶金", "累计获得10万金币", 100_000),
+        ("财运亨通", "累计获得100万金币", 1_000_000),
+        ("爱钱如命", "累计获得1000万金币", 10_000_000),
+        ("痛苦太多", "累计获得1亿金币", 100_000_000),
+    ]
+)
 
-
-@subscribe.on_change(MoneyAnalyse.max)
-async def _(old_value: int, new_value: int, ma: MoneyAnalyse):
-    gid = ma.group_id
-    uid = ma.user_id
-
-    N = 100_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.max",
-            "小有成就", "资产最大值突破10万", 1
-        )
-
-    N = 1_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.max",
-            "百万富翁", "资产最大值突破100万", 2
-        )
-
-    N = 10_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.max",
-            "路灯候选", "资产最大值突破1000万", 3
-        )
-
-    N = 100_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.max",
-            "小目标", "资产最大值突破1亿", 4
-        )
-
-
-@subscribe.on_change(MoneyAnalyse.min)
-async def _(old_value: int, new_value: int, ma: MoneyAnalyse):
-    old_value = -old_value
-    new_value = -new_value
-    gid = ma.group_id
-    uid = ma.user_id
-
-    N = 100_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.min",
-            "小有成就", "资产最小值突破负10万", 1
-        )
-
-    N = 1_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.min",
-            "百万负翁", "资产最小值突破负100万", 2
-        )
-
-    N = 10_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.min",
-            "银行贵宾", "资产最小值突破负1000万", 3
-        )
-
-    N = 100_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.min",
-            "银行亲爹", "资产最小值突破负1亿", 4
-        )
-
-
-@subscribe.on_change(MoneyAnalyse.sum_get)
-async def _(old_value: int, new_value: int, ma: MoneyAnalyse):
-    gid = ma.group_id
-    uid = ma.user_id
-
-    N = 100_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.sum_get",
-            "第一桶金", "累计获得10万金币", 1
-        )
-
-    N = 1_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.sum_get",
-            "财运亨通", "累计获得100万金币", 2
-        )
-
-    N = 10_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.sum_get",
-            "爱钱如命", "累计获得1000万金币", 3
-        )
-
-    N = 100_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.sum_get",
-            "痛苦太多", "累计获得1亿金币", 4
-        )
-
-
-@subscribe.on_change(MoneyAnalyse.sum_lose)
-async def _(old_value: int, new_value: int, ma: MoneyAnalyse):
-    gid = ma.group_id
-    uid = ma.user_id
-
-    N = 100_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.sum_lose",
-            "出手阔绰", "累计消费10万金币", 1
-        )
-
-    N = 1_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.sum_lose",
-            "挥金如土", "累计消费100万金币", 2
-        )
-
-    N = 10_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.sum_lose",
-            "一掷千金", "累计消费1000万金币", 3
-        )
-
-    N = 100_000_000
-    if old_value < N and new_value >= N:
-        await Reputation.add(
-            gid, uid, "money.sum_lose",
-            "分享痛苦", "累计消费1亿金币", 4
-        )
+set_over_type_reputaion(
+    cls_attr=MoneyAnalyse.sum_lose,
+    rs=[
+        ("出手阔绰", "累计消费10万金币", 100_000),
+        ("挥金如土", "累计消费100万金币", 1_000_000),
+        ("一掷千金", "累计消费1000万金币", 10_000_000),
+        ("分享痛苦", "累计消费1亿金币", 100_000_000),
+    ]
+)

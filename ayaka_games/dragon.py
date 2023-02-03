@@ -147,8 +147,8 @@ async def show_data():
     uid = cat.user.id
 
     stmt = select(DragonUserData).filter_by(group_id=gid, user_id=uid)
-    results = cat.db_session.exec(stmt)
-    user_datas = results.all()
+    cursor = cat.db_session.exec(stmt)
+    user_datas = cursor.all()
 
     if user_datas:
         info = "\n".join(
@@ -169,8 +169,8 @@ async def show_rank():
     # SELECT * from dragon_user_data ORDER BY dragon_name, cnt DESC
     stmt = select(DragonUserData).filter_by(group_id=cat.group.id).order_by(
         DragonUserData.dragon_name, desc(DragonUserData.cnt))
-    results = cat.db_session.exec(stmt)
-    for r in results:
+    cursor = cat.db_session.exec(stmt)
+    for r in cursor:
         if r.dragon_name not in data:
             data[r.dragon_name] = []
         data[r.dragon_name].append(r)

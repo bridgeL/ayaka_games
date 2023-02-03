@@ -34,8 +34,8 @@ class GroupWord(GroupDBBase, table=True):
 
 def get_user_words(group_id: str):
     stmt = select(UserWord).filter_by(group_id=group_id)
-    results = cat.db_session.exec(stmt)
-    return results.all()
+    cursor = cat.db_session.exec(stmt)
+    return cursor.all()
 
 
 class GroupMarket(BaseModel):
