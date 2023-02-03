@@ -5,6 +5,23 @@ cat = AyakaCat("成就")
 adapter = get_adapter()
 
 
+class AnalyseBase(UserDBBase):
+    '''可以继承，统计一些基本的信息'''
+    done_cnt: int
+    '''成功次数'''
+    done_combo: int
+    '''连续成功次数'''
+    max_done_combo: int
+    '''最大连续成功次数'''
+
+    fail_cnt: int
+    '''失败次数'''
+    fail_combo: int
+    '''连续失败次数'''
+    max_fail_combo: int
+    '''最大连续失败次数'''
+
+
 class Reputation(UserDBBase, table=True):
     name: str = Field(primary_key=True)
     label: str = Field(primary_key=True)

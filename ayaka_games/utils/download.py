@@ -2,43 +2,11 @@ import json
 import asyncio
 from typing import Awaitable, Callable
 from pathlib import Path
-from pydantic import BaseModel
 from loguru import logger
-from ayaka import AyakaConfig, ResInfo, resource_download_by_res_info, resource_download, get_adapter, UserDBBase, AyakaSubscribe
-
-subscribe = AyakaSubscribe()
-
-
-class WordTaxConfig(BaseModel):
-    tax: int = 100
-    buy_price: int = 1000
-    open_duration: int = 300
-    valid_duration: int = 86400
-    tax_notice: bool = True
+from ayaka import ResInfo, resource_download_by_res_info, resource_download, get_adapter
+from .config import config
 
 
-class PrayConfigItem(BaseModel):
-    reward: int = 0
-    weight: int = 0
-
-
-class Config(AyakaConfig):
-    __config_name__ = "ayaka_game"
-    auto_update: bool = True
-    calculate_reward: int = 1000
-    checkin_reward: int = 10000
-    dragon_reward: int = 1000
-    word_tax: WordTaxConfig = WordTaxConfig()
-    pray: list[PrayConfigItem] = [
-        PrayConfigItem(reward=66, weight=10),
-        PrayConfigItem(reward=666, weight=50),
-        PrayConfigItem(reward=6666, weight=30),
-        PrayConfigItem(reward=66666, weight=5),
-        PrayConfigItem(reward=-66666, weight=5),
-    ]
-
-
-config = Config()
 AUTHOR = "bridgeL"
 REPO = "ayaka_games"
 BRANCH = "master"
@@ -87,20 +55,3 @@ async def download():
     asyncio.create_task(downloader.download_data())
 
 get_adapter().on_startup(download)
-
-
-class AnalyseBase(UserDBBase):
-    '''可以继承，统计一些基本的信息'''
-    done_cnt: int
-    '''成功次数'''
-    done_combo: int
-    '''连续成功次数'''
-    max_done_combo: int
-    '''最大连续成功次数'''
-
-    fail_cnt: int
-    '''失败次数'''
-    fail_combo: int
-    '''连续失败次数'''
-    max_fail_combo: int
-    '''最大连续失败次数'''
