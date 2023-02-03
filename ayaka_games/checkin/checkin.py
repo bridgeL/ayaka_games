@@ -3,8 +3,8 @@
 '''
 import datetime
 from ayaka import AyakaCat, UserDBBase
-from .bag import Money
-from .utils import config, subscribe
+from ..bag import Money
+from ..utils import config, subscribe
 
 cat = AyakaCat('签到')
 

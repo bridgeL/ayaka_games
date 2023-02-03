@@ -4,8 +4,9 @@ from random import choice
 from pydantic import BaseModel
 from loguru import logger
 from ayaka import AyakaCat, load_data_from_file
-from .bag import Money
-from .utils import downloader, config
+from .reputation import CalculateAnalyse
+from ..bag import Money
+from ..utils import downloader, config
 
 cat = AyakaCat("24点")
 cat.help = '''
@@ -96,6 +97,8 @@ async def show_solutions():
     '''展示答案'''
     cache = cat.get_data(Cache)
     solutions = cache.solutions
+    ca = CalculateAnalyse.get_or_create(cat.group.id, cat.user.id)
+    ca.check_ans_cnt += 1
 
     info = "\n".join(solutions)
     await cat.send(info)
@@ -122,11 +125,16 @@ async def calculate_exp():
 
     await cat.send(f"{exp}={r}")
 
+    ca = CalculateAnalyse.get_or_create(cat.group.id, cat.user.id)
+
     if abs(r - cache.n) > 0.0001:
         await cat.send("错误")
+        ca.fail()
         return
 
     await cat.send("正确！")
+    ca.done()
+
     reward = config.calculate_reward
     money = Money.get_or_create(cat.group.id, cat.user.id)
     money.money += reward

@@ -1,5 +1,5 @@
 from ayaka import AyakaCat, get_adapter, UserDBBase
-from .utils import subscribe
+from ..utils import subscribe
 
 cat = AyakaCat("背包")
 adapter = get_adapter()

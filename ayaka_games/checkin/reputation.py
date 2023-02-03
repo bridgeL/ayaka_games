@@ -1,8 +1,7 @@
 import datetime
 from ayaka import UserDBBase
-from .reputation import Reputation
-from ..utils import subscribe
-from ..checkin import Checkin
+from .checkin import Checkin
+from ..utils import subscribe, Reputation
 
 
 @subscribe.cls_property_watch

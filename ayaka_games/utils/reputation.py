@@ -7,19 +7,53 @@ adapter = get_adapter()
 
 class AnalyseBase(UserDBBase):
     '''可以继承，统计一些基本的信息'''
-    done_cnt: int
+    total_cnt: int = 0
+    '''总次数'''
+
+    done_cnt: int = 0
     '''成功次数'''
-    done_combo: int
+    done_combo: int = 0
     '''连续成功次数'''
-    max_done_combo: int
+    max_done_combo: int = 0
     '''最大连续成功次数'''
 
-    fail_cnt: int
+    fail_cnt: int = 0
     '''失败次数'''
-    fail_combo: int
+    fail_combo: int = 0
     '''连续失败次数'''
-    max_fail_combo: int
+    max_fail_combo: int = 0
     '''最大连续失败次数'''
+
+    last_done: int = 0
+    '''上次为成功or失败，正为成功，负为失败'''
+
+    def done(self):
+        self.total_cnt += 1
+        self.done_cnt += 1
+
+        if self.last_done > 0:
+            self.done_combo += 1
+            if self.done_combo > self.max_done_combo:
+                self.max_done_combo = self.done_combo
+
+        if self.last_done < 0:
+            self.fail_combo += 0
+
+        self.last_done = 1
+
+    def fail(self):
+        self.total_cnt += 1
+        self.fail_cnt += 1
+
+        if self.last_done > 0:
+            self.done_combo = 0
+
+        if self.last_done < 0:
+            self.fail_combo += 1
+            if self.fail_combo > self.max_fail_combo:
+                self.max_fail_combo = self.fail_combo
+
+        self.last_done = -1
 
 
 class Reputation(UserDBBase, table=True):

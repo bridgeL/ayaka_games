@@ -1,7 +1,6 @@
 from ayaka import UserDBBase
-from .reputation import Reputation
-from ..utils import subscribe
-from ..bag import Money
+from .bag import Money
+from ..utils import subscribe, Reputation
 
 
 @subscribe.cls_property_watch
