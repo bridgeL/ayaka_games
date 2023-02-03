@@ -1,3 +1,4 @@
+import datetime
 from sqlmodel import Field, select
 from ayaka import AyakaCat, get_adapter, UserDBBase
 from .subscribe import subscribe
@@ -54,6 +55,7 @@ class Reputation(UserDBBase, table=True):
     label: str = Field(primary_key=True)
     desc: str
     rank: int
+    time: str
 
     @property
     def info(self):
@@ -61,7 +63,8 @@ class Reputation(UserDBBase, table=True):
 
     @classmethod
     def get_user_all_reputation(cls, group_id: str, user_id: str):
-        stmt = select(cls).filter_by(group_id=group_id, user_id=user_id).order_by(cls.label, cls.rank)
+        stmt = select(cls).filter_by(group_id=group_id,
+                                     user_id=user_id).order_by(cls.label, cls.rank)
         cursor = cat.db_session.exec(stmt)
         return cursor.all()
 
@@ -72,13 +75,11 @@ class Reputation(UserDBBase, table=True):
             group_id=group_id,
             user_id=user_id,
             name=name,
-            desc=desc,
-            rank=rank,
             label=label
         )
         cursor = cat.db_session.exec(statement)
         data = cursor.one_or_none()
-        
+
         if not data:
             data = cls(
                 group_id=group_id,
@@ -86,7 +87,8 @@ class Reputation(UserDBBase, table=True):
                 name=name,
                 desc=desc,
                 rank=rank,
-                label=label
+                label=label,
+                time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             )
             cat.db_session.add(data)
             u = await cat.get_user(user_id)
@@ -110,7 +112,7 @@ async def show_reputation():
     if not rs:
         return await cat.send(f"[{name}]当前没有成就")
     items = [f"[{name}]当前成就"]
-    items.extend(r.info for r in rs)
+    items.extend(f"{r.info}\n获得时间：{r.time}" for r in rs)
     await cat.send_many(items)
 
 
@@ -128,7 +130,6 @@ def set_over_type_reputaion(cls_attr, rs: list[tuple[str, str, int]], reverse: b
         gid = ca.group_id
         uid = ca.user_id
 
-        print(label, old_value, new_value)
         for i, r in enumerate(rs):
             N = r[2]
             if old_value < N and new_value >= N:
