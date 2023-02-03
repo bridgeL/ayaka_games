@@ -26,7 +26,7 @@
 
 ```
 # run.py
-import ayaka.adapters as cat
+import ayaka.adapters.console as cat
 
 # 加载插件
 import ayaka_games

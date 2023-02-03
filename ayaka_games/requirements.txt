@@ -1,2 +1,2 @@
-ayaka~=0.0.0.1
-pypinyin~=0.47.1
+ayaka>=0.0.3.0
+pypinyin>=0.47.1

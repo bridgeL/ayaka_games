@@ -1,14 +1,12 @@
 import json
 import asyncio
-from typing import Awaitable, Callable, TypeVar
-from sqlmodel import Session, SQLModel, select
+from typing import Awaitable, Callable
 from pathlib import Path
 from pydantic import BaseModel
 from loguru import logger
-from ayaka import resource_download_by_res_info, ResInfo, resource_download, AyakaConfig, get_adapter
+from ayaka import AyakaConfig, ResInfo, resource_download_by_res_info, resource_download, get_adapter, UserDBBase, AyakaSubscribe
 
-
-T = TypeVar("T", bound=SQLModel)
+subscribe = AyakaSubscribe()
 
 
 class WordTaxConfig(BaseModel):
@@ -91,12 +89,18 @@ async def download():
 get_adapter().on_startup(download)
 
 
-def get_or_create(session: Session, model: type[T], **kwargs) -> T:
-    statement = select(model).filter_by(**kwargs)
-    results = session.exec(statement)
-    instance = results.one_or_none()
-    if not instance:
-        instance = model(**kwargs)
-        session.add(instance)
-        session.commit()
-    return instance
+class AnalyseBase(UserDBBase):
+    '''可以继承，统计一些基本的信息'''
+    done_cnt: int
+    '''成功次数'''
+    done_combo: int
+    '''连续成功次数'''
+    max_done_combo: int
+    '''最大连续成功次数'''
+
+    fail_cnt: int
+    '''失败次数'''
+    fail_combo: int
+    '''连续失败次数'''
+    max_fail_combo: int
+    '''最大连续失败次数'''

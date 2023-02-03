@@ -1,6 +1,6 @@
 from random import randint
-from ayaka import AyakaCat, get_session
-from .bag import get_money
+from ayaka import AyakaCat
+from .bag import Money
 from .utils import config
 
 cat = AyakaCat("pray")
@@ -13,7 +13,6 @@ for item in config.pray:
 
 def get_diff():
     target = randint(0, all_wegiht-1)
-    print(target)
 
     sum = 0
     for item in config.pray:
@@ -40,10 +39,8 @@ async def pray():
     prayer_name = cat.user.name
 
     diff = get_diff()
-    with get_session() as session:
-        money = get_money(session, cat.group.id, uid)
-        money.money += diff
-        session.commit()
+    money = Money.get_or_create(cat.group.id, uid)
+    money.money += diff
 
     await cat.send(f"[{prayer_name}]的祈祷，让[{name}]获得 {diff}金")
     if diff < 0:

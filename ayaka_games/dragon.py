@@ -5,10 +5,10 @@ import re
 from random import choice
 from pypinyin import lazy_pinyin
 from pydantic import BaseModel
-from sqlmodel import SQLModel, Field, select, desc
-from ayaka import AyakaCat, load_data_from_file, get_session
-from .bag import get_money
-from .utils import downloader, config, get_or_create
+from sqlmodel import Field, select, desc
+from ayaka import AyakaCat, load_data_from_file, UserDBBase
+from .bag import Money
+from .utils import downloader, config
 
 cat = AyakaCat("接龙管理")
 cat.help = '''接龙，在聊天时静默运行'''
@@ -47,22 +47,19 @@ class Dragon(BaseModel):
         return choice(words)
 
 
-class DragonUserData(SQLModel, table=True):
+class DragonUserData(UserDBBase, table=True):
     '''用户数据'''
     __tablename__ = "dragon_user_data"
-    group_id: str = Field(primary_key=True)
-    user_id: str = Field(primary_key=True)
     dragon_name: str = Field(primary_key=True)
     cnt: int = 0
 
-
-def get_dragon_user_data(session, dragon_name: str):
-    return get_or_create(
-        session, DragonUserData,
-        dragon_name=dragon_name,
-        group_id=cat.group.id,
-        user_id=cat.user.id
-    )
+    @classmethod
+    def get_or_create(cls, dragon_name: str):
+        return cls._get_or_create(
+            dragon_name=dragon_name,
+            group_id=cat.group.id,
+            user_id=cat.user.id
+        )
 
 
 dragon_list: list[Dragon] = []
@@ -85,53 +82,47 @@ zh = re.compile(r"[\u4e00-\u9fff]+")
 @cat.on_text(states=["", "idle"])
 async def handle():
     '''自动接龙'''
-    with get_session() as session:
-        text = cat.arg
-        r = zh.search(text)
-        if not r:
-            return
+    text = cat.arg
+    r = zh.search(text)
+    if not r:
+        return
 
-        word = r.group()
+    word = r.group()
 
-        for dragon in dragon_list:
-            # 跳过不启用的接龙
-            if not dragon.use:
-                continue
+    for dragon in dragon_list:
+        # 跳过不启用的接龙
+        if not dragon.use:
+            continue
 
-            # 当前词语符合接龙词库
-            if dragon.check(word):
+        # 当前词语符合接龙词库
+        if dragon.check(word):
 
-                # 上次接龙
-                last = cat.cache.get("dragon", {}).get(dragon.name, "")
+            # 上次接龙
+            last = cat.cache.get("dragon", {}).get(dragon.name, "")
 
-                # 成功接龙
-                if last and word:
-                    p1 = lazy_pinyin(last)[-1]
-                    p2 = lazy_pinyin(word)[0]
-                    if p1 == p2:
-                        # 修改金钱
-                        usermoney = get_money(
-                            session,
-                            group_id=cat.group.id,
-                            user_id=cat.user.id
-                        )
-                        usermoney.money += config.dragon_reward
-                        await cat.send(f"[{cat.user.name}] 接龙成功！奖励{config.dragon_reward}金")
+            # 成功接龙
+            if last and word:
+                p1 = lazy_pinyin(last)[-1]
+                p2 = lazy_pinyin(word)[0]
+                if p1 == p2:
+                    # 修改金钱
+                    usermoney = Money.get_or_create(cat.group.id,cat.user.id)
+                    usermoney.money += config.dragon_reward
+                    await cat.send(f"[{cat.user.name}] 接龙成功！奖励{config.dragon_reward}金")
 
-                        # 修改记录
-                        user_data = get_dragon_user_data(session, dragon.name)
-                        user_data.cnt += 1
+                    # 修改记录
+                    user_data = DragonUserData.get_or_create(dragon.name)
+                    user_data.cnt += 1
 
-                # 无论是否成功接龙都发送下一个词
-                word = dragon.next(word)
-                cat.cache.setdefault("dragon", {})
-                cat.cache["dragon"][dragon.name] = word
-                if not word:
-                    word = choice(["%$#*-_", "你赢了", "接不上来..."])
-                await cat.send(word)
-                break
+            # 无论是否成功接龙都发送下一个词
+            word = dragon.next(word)
+            cat.cache.setdefault("dragon", {})
+            cat.cache["dragon"][dragon.name] = word
+            if not word:
+                word = choice(["%$#*-_", "你赢了", "接不上来..."])
+            await cat.send(word)
+            break
 
-        session.commit()
 
 cat.set_wakeup_cmds(cmds="接龙管理")
 cat.set_rest_cmds(cmds=["exit", "退出"])
@@ -155,10 +146,9 @@ async def show_data():
     gid = cat.group.id
     uid = cat.user.id
 
-    with get_session() as session:
-        stmt = select(DragonUserData).filter_by(group_id=gid, user_id=uid)
-        results = session.exec(stmt)
-        user_datas = results.all()
+    stmt = select(DragonUserData).filter_by(group_id=gid, user_id=uid)
+    results = cat.db_session.exec(stmt)
+    user_datas = results.all()
 
     if user_datas:
         info = "\n".join(
@@ -177,14 +167,13 @@ async def show_rank():
     data: dict[str, list[DragonUserData]] = {}
 
     # SELECT * from dragon_user_data ORDER BY dragon_name, cnt DESC
-    with get_session() as session:
-        stmt = select(DragonUserData).filter_by(group_id=cat.group.id).order_by(
-            DragonUserData.dragon_name, desc(DragonUserData.cnt))
-        results = session.exec(stmt)
-        for r in results:
-            if r.dragon_name not in data:
-                data[r.dragon_name] = []
-            data[r.dragon_name].append(r)
+    stmt = select(DragonUserData).filter_by(group_id=cat.group.id).order_by(
+        DragonUserData.dragon_name, desc(DragonUserData.cnt))
+    results = cat.db_session.exec(stmt)
+    for r in results:
+        if r.dragon_name not in data:
+            data[r.dragon_name] = []
+        data[r.dragon_name].append(r)
 
     users = await cat.get_users()
     users = {u.id: u.name for u in users}

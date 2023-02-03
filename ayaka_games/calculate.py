@@ -3,8 +3,8 @@ import re
 from random import choice
 from pydantic import BaseModel
 from loguru import logger
-from ayaka import AyakaCat, load_data_from_file, get_session
-from .bag import get_money
+from ayaka import AyakaCat, load_data_from_file
+from .bag import Money
 from .utils import downloader, config
 
 cat = AyakaCat("24点")
@@ -13,7 +13,6 @@ cat.help = '''
 给出4个1-9范围内的数字，请通过以上运算符算出24点
 同时还有48点等其他模式可选，欢迎挑战
 '''
-
 
 questions_bin: dict[int, dict[str, list[str]]] = {}
 
@@ -35,7 +34,7 @@ async def finish():
         try:
             questions_bin[int(p.stem)] = load_data_from_file(p)
         except:
-            pass
+            logger.exception(f"错误的题库 {p}")
 
 
 cat.set_rest_cmds(cmds=["退出", "exit"])
@@ -129,20 +128,14 @@ async def calculate_exp():
 
     await cat.send("正确！")
     reward = config.calculate_reward
-    with get_session() as session:
-        money = get_money(
-            session,
-            group_id=cat.group.id,
-            user_id=cat.user.id
-        )
-        money.money += reward
-        session.commit()
+    money = Money.get_or_create(cat.group.id, cat.user.id)
+    money.money += reward
 
     await cat.send(f"奖励{reward}金")
     await select_question()
 
-# ---- 预检查：对字符串做初步的筛查和简单的纠正 ----
 
+# ---- 预检查：对字符串做初步的筛查和简单的纠正 ----
 
 def check_len(exp: str):
     '''拒绝长度异常的表达式'''
@@ -251,8 +244,8 @@ def pre_check(exp, nums):
 
     return "".join(str(t) for t in ts)
 
-# ---- 计算合法格式的中缀表达式 ----
 
+# ---- 计算合法格式的中缀表达式 ----
 
 def mid2post(ts: list[str | int]):
     '''中缀表达式转后缀表达式'''
@@ -367,16 +360,3 @@ def calc(exp):
         raise Exception(choice(["什么鬼啦！", "你正常点，我害怕", "这，这不对吧", "寄"]))
 
     return v
-
-
-@cat.on_cmd(cmds="测试24点", always=True)
-async def test_exp():
-    '''<表达式>'''
-    exp = str(cat.arg)
-    try:
-        r = calc(exp)
-    except Exception as e:
-        await cat.send(str(e))
-        return
-
-    await cat.send(f"{exp}={r}")
