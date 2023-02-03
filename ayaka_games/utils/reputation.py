@@ -26,6 +26,7 @@ class AnalyseBase(UserDBBase):
     '''上次为成功or失败，正为成功，负为失败'''
 
     def done(self):
+        '''成功'''
         self.total_cnt += 1
         self.done_cnt += 1
 
@@ -38,6 +39,7 @@ class AnalyseBase(UserDBBase):
         self.last_done = 1
 
     def fail(self):
+        '''失败'''
         self.total_cnt += 1
         self.fail_cnt += 1
 

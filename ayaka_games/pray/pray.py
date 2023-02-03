@@ -1,7 +1,8 @@
 from random import randint
 from ayaka import AyakaCat
-from .bag import Money
-from .utils import config
+from .reputation import PrayerAnalyse, BePrayedAnalyse
+from ..bag import Money
+from ..utils import config
 
 cat = AyakaCat("pray")
 cat.help = '祈福'
@@ -46,3 +47,15 @@ async def pray():
     if diff < 0:
         await cat.send(f"反转了，[{name}]损失 {-diff}金")
     await cat.send(f"[{name}] 现在持有 {money.money}金")
+
+    if abs(diff) >= 66666:
+        prayer = PrayerAnalyse.get_or_create(cat.group.id, cat.user.id)
+        be_prayed = BePrayedAnalyse.get_or_create(cat.group.id, uid)
+
+        if diff > 0:
+            prayer.done()
+            be_prayed.done()
+
+        else:
+            prayer.fail()
+            be_prayed.fail()
