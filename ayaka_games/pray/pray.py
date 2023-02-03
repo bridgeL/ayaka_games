@@ -21,8 +21,6 @@ def get_diff():
             return item.reward
         sum += item.weight
 
-    raise
-
 
 @cat.on_cmd(cmds=["pray", "祈祷"])
 async def pray():
@@ -48,14 +46,21 @@ async def pray():
         await cat.send(f"反转了，[{name}]损失 {-diff}金")
     await cat.send(f"[{name}] 现在持有 {money.money}金")
 
-    if abs(diff) >= 66666:
-        prayer = PrayerAnalyse.get_or_create(cat.group.id, cat.user.id)
-        be_prayed = BePrayedAnalyse.get_or_create(cat.group.id, uid)
+    prayer = PrayerAnalyse.get_or_create(cat.group.id, cat.user.id)
+    be_prayed = BePrayedAnalyse.get_or_create(cat.group.id, uid)
 
+    if diff > 0:
+        prayer.total_money += diff
+        be_prayed.total_money += diff
+
+    if abs(diff) >= 66666:
         if diff > 0:
             prayer.done()
             be_prayed.done()
-
         else:
             prayer.fail()
             be_prayed.fail()
+
+    else:
+        prayer.total_cnt += 1
+        be_prayed.total_cnt += 1

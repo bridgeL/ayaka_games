@@ -18,6 +18,15 @@ class BePrayedAnalyse(AnalyseBase, table=True):
 
 
 set_over_type_reputaion(
+    cls_attr=PrayerAnalyse.total_money,
+    rs=[
+        ("聚宝盆", "通过祈祷，总共使他人获得的金币数超过10万", 100_000),
+        ("招财猫", "通过祈祷，总共使他人获得的金币数超过100万", 1_000_000),
+        ("炼金术师", "通过祈祷，总共使他人获得的金币数超过1000万", 10_000_000),
+    ]
+)
+
+set_over_type_reputaion(
     cls_attr=PrayerAnalyse.done_cnt,
     rs=[
         ("乐于助人", "累计祈祷大成功达到3次", 3),
@@ -54,6 +63,15 @@ set_over_type_reputaion(
 )
 
 set_over_type_reputaion(
+    cls_attr=BePrayedAnalyse.total_money,
+    rs=[
+        ("群宠", "因他人祈祷，总共获得的金币数超过10万", 100_000),
+        ("弥撒爱好者", "因他人祈祷，总共获得的金币数超过100万", 1_000_000),
+        ("上帝之子", "因他人祈祷，总共获得的金币数超过1000万", 10_000_000),
+    ]
+)
+
+set_over_type_reputaion(
     cls_attr=BePrayedAnalyse.done_cnt,
     rs=[
         ("意外之财", "累计遭遇祈祷大成功达到1次", 1),
@@ -86,5 +104,15 @@ set_over_type_reputaion(
         ("祸不单行", "连续遭遇2次祈祷大失败", 2),
         ("三灾八难", "连续遭遇3次祈祷大失败", 3),
         ("五雷轰顶", "连续遭遇5次祈祷大失败", 5),
+    ]
+)
+
+
+set_over_type_reputaion(
+    cls_attr=PrayerAnalyse.total_cnt,
+    rs=[
+        ("群神父", "累计祈祷10次", 10),
+        ("群教皇", "累计祈祷100次", 100),
+        ("群bot", "累计祈祷200次", 200),
     ]
 )
