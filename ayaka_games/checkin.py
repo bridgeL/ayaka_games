@@ -4,11 +4,12 @@
 import datetime
 from ayaka import AyakaCat, UserDBBase
 from .bag import Money
-from .utils import config
+from .utils import config, subscribe
 
 cat = AyakaCat('签到')
 
 
+@subscribe.cls_property_watch
 class Checkin(UserDBBase, table=True):
     last_date: str = ""
 
@@ -31,4 +32,3 @@ async def checkin():
 
     name = cat.user.name
     await cat.send(f"[{name}] 签到成功，系统奖励 {config.checkin_reward}金\n[{name}] 当前拥有 {money.money}金")
-
