@@ -1,6 +1,6 @@
 <div align="center">
 
-# Ayaka小游戏合集 - 0.3.0b0
+# Ayaka小游戏合集 - 0.3.0
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ayaka_games)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/ayaka_games)
@@ -19,7 +19,7 @@
 - [hoshino](https://github.com/Ice-Cirno/HoshinoBot)
 - [nonebot1](https://github.com/nonebot/nonebot)
 
-也可将其作为console程序离线运行
+也可将其作为console程序离线运行，便于调试
 
 ## 文档
 
