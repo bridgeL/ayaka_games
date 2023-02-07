@@ -5,9 +5,9 @@ from random import choice
 from typing import Literal
 from pydantic import BaseModel
 from ayaka import AyakaCat, load_data_from_file
-from .utils import downloader
+from .utils import downloader, db
 
-cat = AyakaCat("原神随机事件")
+cat = AyakaCat("原神随机事件",db=db)
 
 
 class Group(BaseModel):

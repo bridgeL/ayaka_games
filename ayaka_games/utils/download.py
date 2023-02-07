@@ -26,16 +26,15 @@ class Downloader:
         '''更新数据'''
         logger.info("检查资源文件...")
 
-        # ---- 临时关闭
-        # if config.auto_update:
-        #     try:
-        #         data = await resource_download(self.RESINFO_URL)
-        #     except:
-        #         logger.warning("目前无法获取资源目录，这意味资源数据无法同步为最新版本，尽管如此，仍可加载本地的资源文件")
-        #     else:
-        #         data = json.loads(data)
-        #         res_info = ResInfo(**data)
-        #         await resource_download_by_res_info(res_info, self.BASE_DIR)
+        if config.auto_update:
+            try:
+                data = await resource_download(self.RESINFO_URL)
+            except:
+                logger.warning("目前无法获取资源目录，这意味资源数据无法同步为最新版本，尽管如此，仍可加载本地的资源文件")
+            else:
+                data = json.loads(data)
+                res_info = ResInfo(**data)
+                await resource_download_by_res_info(res_info, self.BASE_DIR)
 
         ts = [asyncio.create_task(func()) for func in self.funcs]
         await asyncio.gather(*ts)

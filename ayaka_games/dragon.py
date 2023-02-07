@@ -6,11 +6,11 @@ from random import choice
 from pypinyin import lazy_pinyin
 from pydantic import BaseModel
 from sqlmodel import Field, select, desc
-from ayaka import AyakaCat, load_data_from_file, UserDBBase
+from ayaka import AyakaCat, load_data_from_file
 from .bag import Money
-from .utils import downloader, config
+from .utils import downloader, config, db
 
-cat = AyakaCat("接龙管理")
+cat = AyakaCat("接龙管理", db=db)
 cat.help = '''接龙，在聊天时静默运行'''
 
 
@@ -47,7 +47,7 @@ class Dragon(BaseModel):
         return choice(words)
 
 
-class DragonUserData(UserDBBase, table=True):
+class DragonUserData(db.UserDBBase, table=True):
     '''用户数据'''
     __tablename__ = "dragon_user_data"
     dragon_name: str = Field(primary_key=True)

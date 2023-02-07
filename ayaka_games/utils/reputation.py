@@ -1,13 +1,14 @@
 import datetime
 from sqlmodel import Field, select
-from ayaka import AyakaCat, get_adapter, UserDBBase
+from ayaka import AyakaCat, get_adapter
 from .subscribe import subscribe
+from .database import db
 
-cat = AyakaCat("成就")
+cat = AyakaCat("成就", db=db)
 adapter = get_adapter()
 
 
-class AnalyseBase(UserDBBase):
+class AnalyseBase(db.UserDBBase):
     '''可以继承，统计一些基本的信息'''
     total_cnt: int = 0
     '''总次数'''
@@ -52,7 +53,7 @@ class AnalyseBase(UserDBBase):
         self.last_done = -1
 
 
-class Reputation(UserDBBase, table=True):
+class Reputation(db.UserDBBase, table=True):
     name: str = Field(primary_key=True)
     label: str = Field(primary_key=True)
     desc: str
@@ -124,7 +125,7 @@ def set_over_type_reputaion(cls_attr, rs: list[tuple[str, str, int]], reverse: b
         label = str(cls_attr)
 
     @subscribe.on_change(cls_attr)
-    async def _(old_value: int, new_value: int, ca: UserDBBase):
+    async def _(old_value: int, new_value: int, ca: db.UserDBBase):
         if reverse:
             old_value = -old_value
             new_value = -new_value
@@ -144,7 +145,7 @@ def set_zero_type_reputaion(cls_attr, rs: list[tuple[str, str, int]], label: str
         label = str(cls_attr)
 
     @subscribe.on_change(cls_attr)
-    async def _(old_value: int, new_value: int, ca: UserDBBase):
+    async def _(old_value: int, new_value: int, ca: db.UserDBBase):
         gid = ca.group_id
         uid = ca.user_id
 

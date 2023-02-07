@@ -1,11 +1,10 @@
 import datetime
-from ayaka import UserDBBase
 from .checkin import Checkin
-from ..utils import subscribe, set_over_type_reputaion, set_zero_type_reputaion
+from ..utils import subscribe, set_over_type_reputaion, set_zero_type_reputaion, db
 
 
 @subscribe.cls_property_watch
-class CheckinAnalyse(UserDBBase, table=True):
+class CheckinAnalyse(db.UserDBBase, table=True):
     __tablename__ = "checkin_analyse"
 
     combo: int = 0

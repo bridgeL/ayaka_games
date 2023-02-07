@@ -1,10 +1,9 @@
-from ayaka import UserDBBase
 from .bag import Money
-from ..utils import subscribe, set_over_type_reputaion
+from ..utils import subscribe, set_over_type_reputaion, db
 
 
 @subscribe.cls_property_watch
-class MoneyAnalyse(UserDBBase, table=True):
+class MoneyAnalyse(db.UserDBBase, table=True):
     __tablename__ = "money_analyse"
 
     fail_down_cnt: int = 0

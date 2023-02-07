@@ -16,7 +16,8 @@ class PrayConfigItem(BaseModel):
 
 
 class Config(AyakaConfig):
-    __config_name__ = "ayaka_game"
+    __config_dir__ = "ayaka_games"
+    
     auto_update: bool = True
     calculate_reward: int = 1000
     checkin_reward: int = 10000

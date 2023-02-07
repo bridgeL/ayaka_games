@@ -12,7 +12,7 @@ command_start = [""]
 
 ## 总配置
 
-`data/ayaka/ayaka_games.json`
+`data/ayaka_games/config.json`
 
 | 属性               | 含义                           | 所属游戏 |
 | ------------------ | ------------------------------ | -------- |
@@ -31,6 +31,8 @@ command_start = [""]
 | `weight`           | 权重越大，随机到的可能性越大   | 祈祷     |
 
 ## 独立数据文件
+
+**注意：如果要修改此项，请关闭总配置中的`auto_update`**
 
 ### 接龙
 

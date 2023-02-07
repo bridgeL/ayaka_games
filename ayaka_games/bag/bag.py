@@ -1,12 +1,12 @@
-from ayaka import AyakaCat, get_adapter, UserDBBase
-from ..utils import subscribe
+from ayaka import AyakaCat, get_adapter
+from ..utils import subscribe, db
 
-cat = AyakaCat("背包")
+cat = AyakaCat("背包",db=db)
 adapter = get_adapter()
 
 
 @subscribe.cls_property_watch
-class Money(UserDBBase, table=True):
+class Money(db.UserDBBase, table=True):
     money: int = 0
 
 

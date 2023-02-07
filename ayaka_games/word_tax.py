@@ -2,11 +2,11 @@ from random import sample
 from time import time
 from pydantic import BaseModel
 from sqlmodel import Field, select
-from ayaka import AyakaCat, load_data_from_file, GroupDBBase, UserDBBase
+from ayaka import AyakaCat, load_data_from_file
 from .bag import Money
-from .utils import downloader, config
+from .utils import downloader, config,db
 
-cat = AyakaCat("文字税")
+cat = AyakaCat("文字税",db=db)
 cat.help = '''知识付费（doge
 
 注意：只有买了文字的人之间才会相互交税，其他人不受影响'''
@@ -20,13 +20,13 @@ async def finish():
     words.extend(load_data_from_file(path))
 
 
-class UserWord(UserDBBase, table=True):
+class UserWord(db.UserDBBase, table=True):
     __tablename__ = "word_tax"
     word: str = Field(primary_key=True)
     uname: str = ""
     time: int = 0
 
-class GroupWord(GroupDBBase, table=True):
+class GroupWord(db.GroupDBBase, table=True):
     __tablename__ = "word_tax_group"
     words: str = ""
     time: int = 0

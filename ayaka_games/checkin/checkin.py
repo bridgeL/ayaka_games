@@ -2,15 +2,15 @@
     签到模块
 '''
 import datetime
-from ayaka import AyakaCat, UserDBBase
+from ayaka import AyakaCat
 from ..bag import Money
-from ..utils import config, subscribe
+from ..utils import config, subscribe, db
 
-cat = AyakaCat('签到')
+cat = AyakaCat('签到',db=db)
 
 
 @subscribe.cls_property_watch
-class Checkin(UserDBBase, table=True):
+class Checkin(db.UserDBBase, table=True):
     last_date: str = ""
 
 

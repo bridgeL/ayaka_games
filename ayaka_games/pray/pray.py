@@ -2,9 +2,9 @@ from random import randint
 from ayaka import AyakaCat
 from .reputation import PrayerAnalyse, BePrayedAnalyse
 from ..bag import Money
-from ..utils import config
+from ..utils import config, db
 
-cat = AyakaCat("pray")
+cat = AyakaCat("pray", db=db)
 cat.help = '祈福'
 
 all_wegiht = 0

@@ -2,3 +2,5 @@ __pycache__
 dist
 /ayaka
 /data/ayaka
+/data/ayaka_games/config.json
+/data/ayaka_games/data.db
