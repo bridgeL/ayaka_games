@@ -2,11 +2,10 @@ from asyncio import sleep
 from random import randint
 from ayaka import AyakaCat
 from .bag import Money
-from .utils import db
 
 god_names = ['欢愉', '悼亡', '深渊', '智慧']
 
-cat = AyakaCat('mana',db=db)
+cat = AyakaCat('mana', db="ayaka_games")
 cat.help = '''
 ===== m a n a =====
 欢愉、悼亡、深渊、智慧
@@ -14,8 +13,7 @@ cat.help = '''
 '''
 
 
-class ManaGod(db.GroupDBBase, table=True):
-    __tablename__ = "mana_god"
+class ManaGod(cat.db.GroupDBBase, table=True):
     name: str = "欢愉"
     power: int = 1
     cnt: int = 0
@@ -44,8 +42,7 @@ class ManaGod(db.GroupDBBase, table=True):
         return f"{r} {c} {self.power}"
 
 
-class UserMana(db.UserDBBase, table=True):
-    __tablename__ = "user_mana"
+class UserMana(cat.db.UserDBBase, table=True):
     mana: int = 10
 
 

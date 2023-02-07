@@ -8,9 +8,9 @@ from pydantic import BaseModel
 from sqlmodel import Field, select, desc
 from ayaka import AyakaCat, load_data_from_file
 from .bag import Money
-from .utils import downloader, config, db
+from .utils import downloader, config
 
-cat = AyakaCat("接龙管理", db=db)
+cat = AyakaCat("接龙管理", db="ayaka_games")
 cat.help = '''接龙，在聊天时静默运行'''
 
 
@@ -47,9 +47,8 @@ class Dragon(BaseModel):
         return choice(words)
 
 
-class DragonUserData(db.UserDBBase, table=True):
+class DragonUserData(cat.db.UserDBBase, table=True):
     '''用户数据'''
-    __tablename__ = "dragon_user_data"
     dragon_name: str = Field(primary_key=True)
     cnt: int = 0
 
@@ -106,7 +105,7 @@ async def handle():
                 p2 = lazy_pinyin(word)[0]
                 if p1 == p2:
                     # 修改金钱
-                    usermoney = Money.get_or_create(cat.group.id,cat.user.id)
+                    usermoney = Money.get_or_create(cat.group.id, cat.user.id)
                     usermoney.money += config.dragon_reward
                     await cat.send(f"[{cat.user.name}] 接龙成功！奖励{config.dragon_reward}金")
 

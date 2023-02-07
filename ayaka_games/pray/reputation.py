@@ -3,7 +3,6 @@ from ..utils import subscribe, set_over_type_reputaion, AnalyseBase
 
 @subscribe.cls_property_watch
 class PrayerAnalyse(AnalyseBase, table=True):
-    __tablename__ = "prayer"
 
     total_money: int = 0
     '''通过祈祷，总共使他人获得的金币数'''
@@ -11,7 +10,6 @@ class PrayerAnalyse(AnalyseBase, table=True):
 
 @subscribe.cls_property_watch
 class BePrayedAnalyse(AnalyseBase, table=True):
-    __tablename__ = "be_prayed"
 
     total_money: int = 0
     '''因他人祈祷，总共获得的金币数'''

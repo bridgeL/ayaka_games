@@ -3,7 +3,6 @@ from ..utils import subscribe, AnalyseBase, set_over_type_reputaion
 
 @subscribe.cls_property_watch
 class CalculateAnalyse(AnalyseBase, table=True):
-    __tablename__ = "calculate_analyse"
 
     check_ans_cnt: int = 0
     '''查看答案次数'''

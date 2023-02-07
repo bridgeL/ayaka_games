@@ -4,13 +4,13 @@
 import datetime
 from ayaka import AyakaCat
 from ..bag import Money
-from ..utils import config, subscribe, db
+from ..utils import config, subscribe
 
-cat = AyakaCat('签到',db=db)
+cat = AyakaCat('签到', db="ayaka_games")
 
 
 @subscribe.cls_property_watch
-class Checkin(db.UserDBBase, table=True):
+class Checkin(cat.db.UserDBBase, table=True):
     last_date: str = ""
 
 

@@ -1,11 +1,13 @@
 import datetime
+from ayaka import get_db
 from .checkin import Checkin
-from ..utils import subscribe, set_over_type_reputaion, set_zero_type_reputaion, db
+from ..utils import subscribe, set_over_type_reputaion, set_zero_type_reputaion
+
+db = get_db("ayaka_games")
 
 
 @subscribe.cls_property_watch
 class CheckinAnalyse(db.UserDBBase, table=True):
-    __tablename__ = "checkin_analyse"
 
     combo: int = 0
     '''连续签到天数'''

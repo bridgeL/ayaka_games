@@ -3,9 +3,9 @@
 '''
 from random import choice, sample
 from ayaka import AyakaCat, load_data_from_file
-from .utils import downloader, db
+from .utils import downloader
 
-cat = AyakaCat("成语查询",db=db)
+cat = AyakaCat("成语查询", db="ayaka_games")
 cat.help = '''
 有效提高群文学氛围
 

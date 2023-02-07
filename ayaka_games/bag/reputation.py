@@ -1,10 +1,11 @@
+from ayaka import get_db
 from .bag import Money
-from ..utils import subscribe, set_over_type_reputaion, db
+from ..utils import subscribe, set_over_type_reputaion
 
+db = get_db("ayaka_games")
 
 @subscribe.cls_property_watch
 class MoneyAnalyse(db.UserDBBase, table=True):
-    __tablename__ = "money_analyse"
 
     fail_down_cnt: int = 0
     '''金币从正跌负的次数'''

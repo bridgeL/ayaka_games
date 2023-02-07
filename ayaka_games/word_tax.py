@@ -4,9 +4,9 @@ from pydantic import BaseModel
 from sqlmodel import Field, select
 from ayaka import AyakaCat, load_data_from_file
 from .bag import Money
-from .utils import downloader, config,db
+from .utils import downloader, config
 
-cat = AyakaCat("文字税",db=db)
+cat = AyakaCat("文字税", db="ayaka_games")
 cat.help = '''知识付费（doge
 
 注意：只有买了文字的人之间才会相互交税，其他人不受影响'''
@@ -20,14 +20,13 @@ async def finish():
     words.extend(load_data_from_file(path))
 
 
-class UserWord(db.UserDBBase, table=True):
-    __tablename__ = "word_tax"
+class UserWord(cat.db.UserDBBase, table=True):
     word: str = Field(primary_key=True)
     uname: str = ""
     time: int = 0
 
-class GroupWord(db.GroupDBBase, table=True):
-    __tablename__ = "word_tax_group"
+
+class GroupWord(cat.db.GroupDBBase, table=True):
     words: str = ""
     time: int = 0
 
@@ -218,7 +217,8 @@ async def get_tax():
     for users in check_dict.values():
         for u in users:
             if u.user_id not in user_moneys:
-                user_moneys[u.user_id] = Money.get_or_create(u.group_id, u.user_id)
+                user_moneys[u.user_id] = Money.get_or_create(
+                    u.group_id, u.user_id)
     user_moneys[cat.user.id] = Money.get_or_create(cat.group.id, cat.user.id)
 
     for w in check_dict.keys():

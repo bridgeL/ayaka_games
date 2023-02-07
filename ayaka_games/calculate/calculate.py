@@ -6,9 +6,9 @@ from loguru import logger
 from ayaka import AyakaCat, load_data_from_file
 from .reputation import CalculateAnalyse
 from ..bag import Money
-from ..utils import downloader, config, db
+from ..utils import downloader, config
 
-cat = AyakaCat("24点",db=db)
+cat = AyakaCat("24点",db="ayaka_games")
 cat.help = '''
 加、减、乘、除、次方，5种运算符可用
 给出4个1-9范围内的数字，请通过以上运算符算出24点
