@@ -1,6 +1,6 @@
 <div align="center">
 
-# Ayaka小游戏合集 - 0.4.0
+# Ayaka小游戏合集 - 0.4.1
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ayaka_games)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/ayaka_games)
@@ -25,36 +25,10 @@
 
 https://bridgel.github.io/ayaka_games/
 
-## 历史遗留问题
-
-如果你之前安装过`nonebot_plugin_ayaka_games`，请先确保它卸载干净
+## nb2安装
 
 ```
-pip uninstall nonebot_plugin_ayaka_games
-pip uninstall nonebot_plugin_ayaka
-```
-
-## 安装
-
-```
-pip install ayaka_games
-```
-
-## 作为console程序离线运行
-
-```py
-# run.py
-import ayaka.adapters.console as cat
-
-# 加载插件
-import ayaka_games
-
-if __name__ == "__main__":
-    cat.run()
-```
-
-```
-python run.py
+nb plugin install ayaka_games
 ```
 
 ## 其他
